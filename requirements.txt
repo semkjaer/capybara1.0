@@ -3,3 +3,4 @@ odfpy
 numpy
 pandas
 sklearn
+geopandas
