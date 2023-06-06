@@ -1,5 +1,14 @@
 #installation:
 
+anywhere you want the repo folder to be in terminal:
+download repo
+```
+git clone https://github.com/semkjaer/capybara1.0
+```
+cd to repo
+```
+git clone https://github.com/semkjaer/capybara1.0
+```
 create virtual environment (first time only):
 ```
 python -m venv ../capy-env
