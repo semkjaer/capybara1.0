@@ -3,6 +3,7 @@ odfpy
 numpy
 pandas
 scikit-learn
+xgboost
 geopandas
 matplotlib
 streamlit-authenticator
