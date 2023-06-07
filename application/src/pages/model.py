@@ -36,7 +36,7 @@ def get_data():
     # als je wijk en gemeentecode hebt heb je wijkcode en gemeentenaam niet nodig
     df = df.merge(wijk[['wijk', 'gemeentecode']], on='wijk', how='left')
     # per_jhzv : aandeel jeugdigen met jeugdhulp zonder verblijf, waargenomen -> target variable
-    df = df.merge(gebr[['wijk', 'perc_jhzv', 'perc_przv']], on='wijk', how='left')
+    df = df.merge(gebr[['wijk', 'perc_jhzv']], on='wijk', how='left')
 
     for col in df.columns:
         df[col] = df[col].apply(lambda x: x if x != '.' else np.nan)
