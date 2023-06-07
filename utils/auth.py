@@ -3,9 +3,11 @@ import streamlit as st
 import yaml
 from yaml.loader import SafeLoader
 import uuid
+import os
 
 def auth():
-        with open('./config.yaml') as file:
+        print(os.getcwd())
+        with open('config.yaml') as file:
                 config = yaml.load(file, Loader=SafeLoader)
 
                 authenticator = stauth.Authenticate(
