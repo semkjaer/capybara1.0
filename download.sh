@@ -1,10 +1,13 @@
 #!/bin/sh
 
+sudo apt-get install unzip
+
 # URL of the zip file
 URL="https://www.cbs.nl/-/media/cbs/dossiers/nederland-regionaal/wijk-en-buurtstatistieken/wijkbuurtkaart_2022_v1.zip"
 
 # Directory to check
 DIR="WijkBuurtkaart_2022_v1/"
+ZIP="wijkbuurtkaart_2022_v1.zip"
 
 # Check if the directory exists
 if [ ! -d "$DIR" ]; then
