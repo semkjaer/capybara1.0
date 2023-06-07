@@ -2,6 +2,12 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
+import streamlit_authenticator as stauth
+import yaml
+from yaml.loader import SafeLoader
+import uuid
+
+from utils.auth import auth
 
 @st.cache_data
 def load_data():
@@ -12,8 +18,36 @@ def load_data():
 
     file.close()
 
+    for col in det.columns:
+        det[col] = det[col].apply(lambda x: x if x != '.' else np.nan)
+
     return det
 
-data = load_data()
-data
+if 'key' not in st.session_state:
+        st.session_state['key'] = str(uuid.uuid4())
+
+with open('./application/config.yaml') as file:
+        config = yaml.load(file, Loader=SafeLoader)
+
+        authenticator = stauth.Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+        config['preauthorized']
+        )
+        
+        name, authentication_status, username = authenticator.login('Login', 'main')
+
+if authentication_status:
+     st.title('Data page')
+     data = load_data()
+     data
+elif authentication_status == False:
+     st.error('Username/password is incorrect')
+
+
+if st.session_state["authentication_status"]:
+    authenticator.logout('Logout', 'sidebar')
+
 
