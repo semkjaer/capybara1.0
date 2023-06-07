@@ -13,6 +13,7 @@ if 'key' not in st.session_state:
 authenticator = auth()
 name, authentication_status, username = authenticator.login('Login', 'main')
 
+
 if st.session_state["authentication_status"]:
         st.title('Home page')
         st.write('welcome', name)
