@@ -9,11 +9,11 @@ URL="https://www.cbs.nl/-/media/cbs/dossiers/nederland-regionaal/wijk-en-buurtst
 DIR="WijkBuurtkaart_2022_v1/"
 ZIP="wijkbuurtkaart_2022_v1.zip"
 
-if [ -f "$ZIP" ]; then
-    rm $FILE
-    echo "File $FILE deleted."
+if [ "$ZIP" ]; then
+    rm -f $ZIP
+    echo "File $ZIP deleted."
 else
-    echo "File $FILE does not exist."
+    echo "File $ZIP does not exist."
 fi
 
 # Check if the directory exists
