@@ -17,5 +17,5 @@ EXPOSE 8501
 ENV NAME streamlit_app
 
 # Run streamlit when the container launches
-CMD streamlit run home.py --server.port 8501 --server.address 0.0.0.0 --server.enableXsrfProtection=false --server.enableCORS=false
+CMD sh download.sh && streamlit run home.py --server.port 8501 --server.address 0.0.0.0 --server.enableXsrfProtection=false --server.enableCORS=false
 

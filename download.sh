@@ -9,9 +9,9 @@ URL="https://www.cbs.nl/-/media/cbs/dossiers/nederland-regionaal/wijk-en-buurtst
 DIR="WijkBuurtkaart_2022_v1/"
 ZIP="wijkbuurtkaart_2022_v1.zip"
 
-if [ "$ZIP" ]; then
+if [ -f "$ZIP" ]; then
     rm -f $ZIP
-    echo "File $ZIP deleted."
+    echo "Old file $ZIP deleted."
 else
     echo "File $ZIP does not exist."
 fi
