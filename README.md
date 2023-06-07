@@ -32,6 +32,7 @@ download WijkBuurtkaart_2022_v1 at https://www.cbs.nl/-/media/cbs/dossiers/neder
 
 To run streamlit app locally, from capybara1.0 folder:
 ```
-streamlit run app.py
+streamlit run application/src/home.py
 ```
 then go to http://localhost:8501 or check terminal
+
