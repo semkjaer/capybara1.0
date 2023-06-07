@@ -4,6 +4,10 @@ credentials:
       email: semkjaer@hotmail.nl
       name: sem
       password: $2b$12$JAh13DiOtwszKTKOGbpLzeAGDKOcLTQpkhnb3iO0kEAtVKb8.k9Hu
+    stan:
+      email: stanfris2.0@gmail.com
+      name: stan
+      password: $2b$12$xzH4XuDEJEHwX3jiWgbEVO7FqjMAm5wDmjxeOIf6QRGSxyHKsjiFO.k9Hu
 cookie:
   expiry_days: 30
   key: random_signature_key # Must be string
