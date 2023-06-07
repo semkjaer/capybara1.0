@@ -3,49 +3,25 @@ import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 import streamlit_authenticator as stauth
-import yaml
-from yaml.loader import SafeLoader
 import uuid
 
-
-st.set_page_config(
-        page_title="Home",
-)
+from utils.auth import auth
 
 if 'key' not in st.session_state:
-        st.session_state['key'] = uuid.uuid1()
+            st.session_state['key'] = str(uuid.uuid4())
 
-with open('./application/config.yaml') as file:
-    config = yaml.load(file, Loader=SafeLoader)
+authenticator = auth()
+name, authentication_status, username = authenticator.login('Login', 'main')
 
-    authenticator = stauth.Authenticate(
-        config['credentials'],
-        config['cookie']['name'],
-        config['cookie']['key'],
-        config['cookie']['expiry_days'],
-        config['preauthorized']
-    )
-
-    name, authentication_status, username = authenticator.login('Login', 'main')
-
-if authentication_status:
-     st.write('Welcome *%s*' % (name))
-     st.title('Some content')
+if st.session_state["authentication_status"]:
+        st.title('Home page')
+        st.write('welcome', name)
 elif authentication_status == False:
-     st.error('Username/password is incorrect')
-elif authentication_status == None:
-     st.warning('Please enter your username and password')
+        st.error('Username/password is incorrect')
+
+
+
 
 
 if st.session_state["authentication_status"]:
-    authenticator.logout('Logout', 'main')
-    st.write(f'Welcome *{st.session_state["name"]}*')
-    st.title('Some content')
-elif st.session_state["authentication_status"] == False:
-    st.error('Username/password is incorrect')
-elif st.session_state["authentication_status"] == None:
-    st.warning('Please enter your username and password')
-
-
-st.title("Home Page")
-st.write("This is the home page.")
+        authenticator.logout('Logout', 'sidebar')
