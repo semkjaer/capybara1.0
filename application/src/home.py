@@ -5,8 +5,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import uuid
 
-from utils.auth import auth
-from utils.logo import logo
+from utils import auth, logo
 
 logo()
 
@@ -29,3 +28,4 @@ elif authentication_status == False:
 
 if st.session_state["authentication_status"]:
         authenticator.logout('Logout', 'sidebar')
+
