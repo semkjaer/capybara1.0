@@ -72,7 +72,6 @@ def get_data():
     return wijk_final
 
 
-
 def model(df):
     df = df.fillna(df.mean(numeric_only=True))
     df = df.drop(['JRSTATCODE', 'JAAR', 'Shape_Leng', 'Shape_Area', 'geometry', 'wijk', 'WK_CODE', 'WK_NAAM', 'GM_CODE', 'GM_NAAM', 'gemeentecode', 'H2O'], axis=1)
@@ -130,8 +129,6 @@ def model(df):
 
     # Set plot title and labels
     plt.title('Feature Importances')
-    plt.xlabel('Features')
-    plt.ylabel('Importance')
 
     # Adjust layout to prevent label cutoff
     plt.tight_layout()
