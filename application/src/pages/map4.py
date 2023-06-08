@@ -71,13 +71,17 @@ def get_data():
     wijk_geo.crs
     gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
     fig, ax = plt.subplots(figsize = (12,12))
-    gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+    if option == "Nederland":
+        gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+    if option == "Amsterdam":
+        gdf[gdf.gemeentecode == 363].plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
     return fig
 
 if st.session_state["authentication_status"]:
     st.title("Model Page")
     st.write("This is the model page.")
-    st.pyplot(get_data())
+    option = st.selectbox("Region", ('', 'Amsterdam'))
+    st.pyplot(get_data(option))
 elif authentication_status == False:
      st.error('Username/password is incorrect')
 
