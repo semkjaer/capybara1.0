@@ -8,6 +8,9 @@ from yaml.loader import SafeLoader
 import uuid
 
 from utils.auth import auth
+from utils.logo import logo
+
+logo()
 
 if 'key' not in st.session_state:
         st.session_state['key'] = str(uuid.uuid4())
