@@ -7,8 +7,7 @@ import yaml
 from yaml.loader import SafeLoader
 import uuid
 
-from utils.auth import auth
-from utils.logo import logo
+from utils import auth, logo
 
 logo()
 
