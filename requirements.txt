@@ -7,3 +7,4 @@ xgboost
 geopandas
 matplotlib
 streamlit-authenticator
+streamlit-extras
