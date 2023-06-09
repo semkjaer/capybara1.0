@@ -2,7 +2,6 @@ import uuid
 import yaml
 import streamlit as st
 from yaml.loader import SafeLoader
-from yaml.loader import SafeLoader
 from streamlit_extras.app_logo import add_logo
 import streamlit_authenticator as stauth
 import pandas as pd
@@ -20,18 +19,19 @@ def logo():
 
 
 def auth():
-        with open('./config.yaml') as file:
-                config = yaml.load(file, Loader=SafeLoader)
+    with open('./application/config.yaml', 'r') as file:
+            conf = yaml.load(file, Loader=SafeLoader)
 
-                authenticator = stauth.Authenticate(
-                config['credentials'],
-                config['cookie']['name'],
-                config['cookie']['key'],
-                config['cookie']['expiry_days'],
-                config['preauthorized']
-                )
+    authenticator = stauth.Authenticate(
+        conf['credentials'],
+        conf['cookie']['name'],
+        conf['cookie']['key'],
+        conf['cookie']['expiry_days'],
+        conf['preauthorized']
+    )
 
-        return authenticator
+    return authenticator, conf
+
 
 
 @st.cache_data
@@ -65,11 +65,12 @@ def get_data():
 
     wijk_geo['WK_CODE'] = wijk_geo['WK_CODE'].apply(lambda x: x[2:]).astype('float')
     wijk_geo['GM_CODE'] = wijk_geo['GM_CODE'].apply(lambda x: x[2:]).astype('float')
-    wijk_final = df.merge(wijk_geo, left_on=['wijk', 'gemeentecode'], right_on=['WK_CODE', 'GM_CODE'], how='left')
-    for col in wijk_final.columns:
-        wijk_final[col] = wijk_final[col].apply(lambda x: x if x != int(-99999999) else np.nan)
+    df = wijk_geo.merge(df, left_on=['WK_CODE', 'GM_CODE'], right_on=['wijk', 'gemeentecode'], how='left')
+    for col in df.columns:
+        df[col] = df[col].apply(lambda x: x if x != int(-99999999) else np.nan)
+    # wijk_final.to_csv('data_combined.csv', index=False)
 
-    return wijk_final
+    return df
 
 
 def model(df):
@@ -111,7 +112,7 @@ def model(df):
 
     # Evaluate the model
     mse = mean_squared_error(y_test, y_pred)
-    print("Mean Squared Error: %.2f" % mse)
+    print("Root Mean Squared Error: %.2f" % mse**0.5)
 
     importances = model.feature_importances_
     feature_names = X_train.columns

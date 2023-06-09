@@ -3,10 +3,7 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from xgboost import XGBRegressor
-from sklearn.ensemble import BaggingRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import train_test_split
+import os
 
 # app imports
 import uuid
@@ -20,13 +17,16 @@ logo()
 if 'key' not in st.session_state:
         st.session_state['key'] = str(uuid.uuid4())
 
-authenticator = auth()
+authenticator, config = auth()
 name, authentication_status, username = authenticator.login('Login', 'main')
 
 if authentication_status:
     authenticator.logout('Logout', 'sidebar')
 
-df = get_data()
+if os.path.exists('./data_combined.csv'):
+         df = gpd.read_csv('./data_combined.csv')
+else:
+    df = get_data()
 gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
 fig, ax = plt.subplots(figsize = (12,12))
 gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
