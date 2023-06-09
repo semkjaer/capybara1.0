@@ -8,10 +8,12 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from xgboost import XGBRegressor, plot_importance
-from sklearn.ensemble import BaggingRegressor
+from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 @st.cache_resource
 def logo():
@@ -20,17 +22,17 @@ def logo():
 
 def auth():
     with open('./application/config.yaml', 'r') as file:
-            conf = yaml.load(file, Loader=SafeLoader)
+            config = yaml.load(file, Loader=SafeLoader)
 
     authenticator = stauth.Authenticate(
-        conf['credentials'],
-        conf['cookie']['name'],
-        conf['cookie']['key'],
-        conf['cookie']['expiry_days'],
-        conf['preauthorized']
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days'],
+        config['preauthorized']
     )
 
-    return authenticator, conf
+    return authenticator, config
 
 
 
@@ -135,3 +137,46 @@ def model(df):
     plt.tight_layout()
 
     return fig
+
+
+
+def send_email(sender_email, receiver_email, subject, message, smtp_server, smtp_port, username, password):
+    # Create a multipart message and set headers
+    email_message = MIMEMultipart()
+    email_message["From"] = sender_email
+    email_message["To"] = receiver_email
+    email_message["Subject"] = subject
+
+    # Add body to the email
+    email_message.attach(MIMEText(message, "plain"))
+
+    # Convert the email message to a string
+    email_text = email_message.as_string()
+
+    try:
+        # Create a secure SSL/TLS connection to the SMTP server
+        with smtplib.SMTP(smtp_server, smtp_port) as server:
+            # Log in to the SMTP server
+            server.starttls()
+            server.login(username, password)
+            # Send the email
+            server.sendmail(sender_email, receiver_email, email_text)
+        print("Email sent successfully!")
+    except Exception as e:
+        print(f"Failed to send email. Error message: {str(e)}")
+
+
+def registration_email(receiver_email, registered):
+    sender_email = "semkjaer@hotmail.nl"
+    if registered == True:
+        subject = "A new account has been registered!"
+        message = "You can now log in to the app using the credentials you filled in during account creation!"
+    else:
+        subject = "Account creation authorized"
+        message = "Welcome <user>,\n\nYou may now create an account on in our app: http://localhost:8501 "
+    smtp_server = "smtp-mail.outlook.com"
+    smtp_port = 587
+    username = "semkjaer@hotmail.nl"
+    password = "Sjemma@023"
+
+    send_email(sender_email, receiver_email, subject, message, smtp_server, smtp_port, username, password)
