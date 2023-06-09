@@ -1,13 +1,7 @@
 # data imports
+import os
 import pandas as pd
-import numpy as np
 import geopandas as gpd
-import matplotlib.pyplot as plt
-from xgboost import XGBRegressor
-from sklearn.ensemble import BaggingRegressor
-from sklearn.metrics import mean_squared_error
-from sklearn.model_selection import train_test_split
-
 # app imports
 import uuid
 import streamlit as st
@@ -19,7 +13,7 @@ logo()
 if 'key' not in st.session_state:
         st.session_state['key'] = str(uuid.uuid4())
 
-authenticator = auth()
+authenticator, config = auth()
 name, authentication_status, username = authenticator.login('Login', 'main')
 
 if authentication_status:
@@ -28,7 +22,10 @@ if authentication_status:
 if st.session_state["authentication_status"]:
     st.title("Blik op de toekomst")
     st.write("Top 5 feature importances.")
-    df = get_data()
+    if os.path.exists('./data_combined.csv'):
+         df = gpd.read_csv('./data_combined.csv')
+    else:
+        df = get_data()
     fig = model(df)
     st.pyplot(fig)
 elif authentication_status == False:
