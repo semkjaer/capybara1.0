@@ -8,3 +8,5 @@ geopandas
 matplotlib
 streamlit-authenticator
 streamlit-extras
+xlrd
+openpyxl
