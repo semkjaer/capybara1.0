@@ -22,11 +22,8 @@ if authentication_status:
 if st.session_state["authentication_status"]:
     st.title("Blik op de toekomst")
     st.write("Top 5 feature importances.")
-    if os.path.exists('./data_combined.csv'):
-         df = gpd.read_csv('./data_combined.csv')
-    else:
-        df = get_data()
-    fig = model(df)
-    st.pyplot(fig)
+    # df = get_data()
+    # fig = model(df)
+    # st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')

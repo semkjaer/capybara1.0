@@ -23,18 +23,18 @@ name, authentication_status, username = authenticator.login('Login', 'main')
 if authentication_status:
     authenticator.logout('Logout', 'sidebar')
 
-if os.path.exists('./data_combined.csv'):
-         df = gpd.read_csv('./data_combined.csv')
-else:
-    df = get_data()
-gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
-fig, ax = plt.subplots(figsize = (12,12))
-gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+# if os.path.exists('./data_combined.csv'):
+#          df = gpd.read_csv('./data_combined.csv')
+
+# df = get_data()
+# gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
+# fig, ax = plt.subplots(figsize = (12,12))
+# gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
 
 if st.session_state["authentication_status"]:
     st.title("Jeugdzorg in kaart")
     st.write("This is the model page.")
-    st.pyplot(fig)
+    # st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')
 
