@@ -37,33 +37,10 @@ if 'login' not in st.session_state:
         st.session_state['admin'] = False
 
 
-with st.expander('Register'):
-        old_users = [x for x in config['credentials']['usernames']]
-        try:
-                if authenticator.register_user('Register user', preauthorization=True):
-                        with open('./application/config.yaml', 'w') as file:
-                                yaml.dump(config, file)
-                                st.success('User registered successfully')
-                                for user in config['credentials']['usernames']:
-                                        if (user in old_users) == False:
-                                                registration_email(config['credentials']['usernames'][user]['email'], registered=False)
-        except Exception as e:
-                st.error(str(e))
-
 with st.expander('Login', expanded=True):
         name, authentication_status, username = authenticator.login('Login', 'main')
 
 if st.session_state["authentication_status"]:
-        st.markdown('''
-        <style>
-        .streamlit-expanderHeader {
-        display: none !important;
-        border: 0px;
-        }
-        .st-dq {
-        background-color: #FFFFFF;
-        }</style>
-        ''', unsafe_allow_html=True)
         if name == 'admin':
                 with st.expander('Preauthorize user'):
                         st.session_state['register'] = False
@@ -92,6 +69,19 @@ if st.session_state["authentication_status"]:
 elif authentication_status == False:
         st.error('Username/password is incorrect')
 
+if not st.session_state["authentication_status"]:
+        with st.expander('Register'):
+                old_users = [x for x in config['credentials']['usernames']]
+                try:
+                        if authenticator.register_user('Register user', preauthorization=True):
+                                with open('./application/config.yaml', 'w') as file:
+                                        yaml.dump(config, file)
+                                        st.success('User registered successfully')
+                                        for user in config['credentials']['usernames']:
+                                                if (user in old_users) == False:
+                                                        registration_email(config['credentials']['usernames'][user]['email'], registered=False)
+                except Exception as e:
+                        st.error(str(e))
 
 if st.session_state["authentication_status"]:
         authenticator.logout('Logout', 'sidebar')
