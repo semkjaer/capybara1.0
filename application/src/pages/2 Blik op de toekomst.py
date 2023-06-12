@@ -22,8 +22,8 @@ if authentication_status:
 if st.session_state["authentication_status"]:
     st.title("Blik op de toekomst")
     st.write("Top 5 feature importances.")
-    # df = get_data()
-    # fig = model(df)
-    # st.pyplot(fig)
+    df = get_data()
+    fig = model(df)
+    st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')

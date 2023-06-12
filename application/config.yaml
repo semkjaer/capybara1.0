@@ -24,6 +24,10 @@ credentials:
       email: semkjaer@hotmail.nl
       name: sem
       password: $2b$12$JAh13DiOtwszKTKOGbpLzeAGDKOcLTQpkhnb3iO0kEAtVKb8.k9Hu
+    stan:
+      email: stanfris2.0@gmail.com
+      name: Stan
+      password: $2b$12$eXI7dYC8EUFjpDWXI3A6uewe581.qSohfBoeR539DYeLJjDLKgMci
 preauthorized:
   emails:
   - semkjaer@hotmail.nl
