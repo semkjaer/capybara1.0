@@ -31,3 +31,32 @@ credentials:
 preauthorized:
   emails:
   - semkjaer@hotmail.nl
+cookie:
+  expiry_days: 30
+  key: random_signature_key
+  name: random_cookie_name
+credentials:
+  usernames:
+    admin:
+      email: semkjaer@hotmail.com
+      name: admin
+      password: $2b$12$JAh13DiOtwszKTKOGbpLzeAGDKOcLTQpkhnb3iO0kEAtVKb8.k9Hu
+    kkkkk:
+      email: snm@hjd.nl
+      name: kkkkk
+      password: $2b$12$4fdcc3Kbk9CH5eMHnGYXieKou/NpLlHuZCI4oZ9qfxLR1VYohb6wK
+    pppp:
+      email: sajhka@dsn.ll
+      name: pppp
+      password: $2b$12$30MMqfYsnfRREUq8d.PhWO9qvzOf2YkIaq3BHo87jhIsOLBBaEohG
+    sds:
+      email: jkds@jkda.nksd
+      name: sds
+      password: $2b$12$aqFpUADZoYs7NdhxKyaN8eVNqkLqiX/GKqcfzWTAKddbbsjice/6m
+    sem:
+      email: semkjaer@hotmail.nl
+      name: sem
+      password: $2b$12$JAh13DiOtwszKTKOGbpLzeAGDKOcLTQpkhnb3iO0kEAtVKb8.k9Hu
+preauthorized:
+  emails:
+  - semkjaer@hotmail.nl
