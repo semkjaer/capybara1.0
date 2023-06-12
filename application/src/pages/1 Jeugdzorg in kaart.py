@@ -29,6 +29,7 @@ if os.path.exists('./data_combined.csv'):
 df = get_data()
 gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
 fig, ax = plt.subplots(figsize = (12,12))
+ax.set_axis_off()
 
 if st.session_state["authentication_status"]:
     st.title("Jeugdzorg in kaart")
