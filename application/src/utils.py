@@ -17,7 +17,7 @@ from email.mime.multipart import MIMEMultipart
 
 @st.cache_resource
 def logo():
-    return add_logo("application/src/PRiz_diapositief op roze.jpeg")
+    return add_logo("application/src/logo_localgovernment.jpg")
 
 
 def auth():

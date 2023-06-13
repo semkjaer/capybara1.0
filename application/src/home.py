@@ -46,7 +46,15 @@ if 'key' not in st.session_state:
 
 st.markdown('''
 <style>
-.st-dq { background-color: #FFFFFF; }
+[data-testid="stHeader"] {
+        display: none;
+}
+[data-baseweb="base-input"] {
+        border:1px solid black; 
+}
+.streamlit-expander { 
+        background-color: #FFFFFF; 
+}
 </style>
 ''', unsafe_allow_html=True)
 authenticator, config = auth()
@@ -72,19 +80,19 @@ if st.session_state["authentication_status"]:
                                         file.write(f'  - {email}\n')
                                         registration_email(email, registered=False)
                                 st.success('email preauthorized!')
-        st.title('Home page')
-        st.markdown('''
-        Welkom op **capybara1.0** hét dashboard dat inzicht biedt in de jeugdzorg!
+        with st.expander('Home page', expanded=True):
+                st.markdown('''
+                Welkom op **capybara1.0** hét dashboard dat inzicht biedt in de jeugdzorg!
 
-        De pagina 'Jeugdzorg in Kaart' bevat kaarten en grafieken om de jeugdzorg in
-        Nederland inzichtelijk te maken. Aan de hand van data van het CBS kun u hier
-        de bezettingsgraad en risicofactoren van verschillende gemeentes en wijken
-        met elkaar vergelijken.
+                De pagina 'Jeugdzorg in Kaart' bevat kaarten en grafieken om de jeugdzorg in
+                Nederland inzichtelijk te maken. Aan de hand van data van het CBS kun u hier
+                de bezettingsgraad en risicofactoren van verschillende gemeentes en wijken
+                met elkaar vergelijken.
 
-        Op de pagina 'Blik op de toekomst' bevat de resultaten van vindt u de 
-        resultaten van verschillende analyses die inzicht dienen te bieden in de
-        toekomst van de jeugdzorg en de factoren die hier aan bij kunnen dragen.
-        ''')
+                Op de pagina 'Blik op de toekomst' bevat de resultaten van vindt u de 
+                resultaten van verschillende analyses die inzicht dienen te bieden in de
+                toekomst van de jeugdzorg en de factoren die hier aan bij kunnen dragen.
+                ''')
 elif authentication_status == False:
         st.error('Username/password is incorrect')
 
