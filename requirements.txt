@@ -10,3 +10,5 @@ streamlit-authenticator
 streamlit-extras
 xlrd
 openpyxl
+streamlit-folium
+folium
