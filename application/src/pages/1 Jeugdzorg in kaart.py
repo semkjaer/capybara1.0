@@ -82,7 +82,7 @@ if st.session_state["authentication_status"]:
             complete = True
         else:
             # try:
-                gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[1]
+                gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[0]
                 plt = gdf[gdf.gemeentecode == gemeentecode].explore(column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
                 output = st_folium(plt)
                 st.write(output)
