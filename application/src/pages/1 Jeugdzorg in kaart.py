@@ -69,7 +69,14 @@ if st.session_state["authentication_status"]:
     with st.expander('Home page', expanded=True):
         st.title("Jeugdzorg in kaart")
         st.write("Hier kan je kaarten bekijken")
-        option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.GM_NAAM.unique()[1:]))
+        # capitalize the first character of username
+        username = username.capitalize()
+        if username in gdf.GM_NAAM.unique():
+            # st.write(f"Je bent ingelogd als {username}")
+            option = st.selectbox("Selecteer gebied:", np.append([username], gdf.GM_NAAM.unique()[1:]))
+        else:
+            # st.write(f"Je bent ingelogd als {username}")
+            option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.GM_NAAM.unique()[1:]))
         if option == "Nederland":
             gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
             complete = True

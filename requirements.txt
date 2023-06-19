@@ -3,7 +3,7 @@ odfpy
 numpy
 pandas
 scikit-learn
-xgboost
+# xgboost
 geopandas
 matplotlib
 streamlit-authenticator
@@ -14,3 +14,5 @@ streamlit-folium
 folium
 matplotlib 
 mapclassify
+# sqlalchemy
+# psycopg2
