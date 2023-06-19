@@ -74,25 +74,28 @@ if st.session_state["authentication_status"]:
             gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
             complete = True
         else:
-            try:
+            # try:
                 gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[1]
-                df = gdf[gdf.gemeentecode == gemeentecode]
-                df = df.to_crs(epsg=4326)
-                m = folium.Map(location=[52.1326, 5.2913], zoom_start=9, tiles="CartoDB positron")
-                for _, r in df.iterrows():
-                    # Without simplifying the representation of each borough,
-                    # the map might not be displayed
-                    sim_geo = gpd.GeoSeries(r["geometry"]).simplify(tolerance=0.003)
-                    geo_j = sim_geo.to_json()
-                    geo_j = folium.GeoJson(data=geo_j, style_function=lambda x: {"fillColor": "orange"})
-                    folium.Popup(r["WK_NAAM"]).add_to(geo_j)
-                    geo_j.add_to(m)
-                output = st_folium(m)
+                plt = gdf[gdf.gemeentecode == gemeentecode].explore(column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+                output = st_folium(plt)
                 st.write(output)
+                # df = gdf[gdf.gemeentecode == gemeentecode]
+                # df = df.to_crs(epsg=4326)
+                # m = folium.Map(location=[52.1326, 5.2913], zoom_start=9, tiles="CartoDB positron")
+                # for _, r in df.iterrows():
+                #     # Without simplifying the representation of each borough,
+                #     # the map might not be displayed
+                #     sim_geo = gpd.GeoSeries(r["geometry"]).simplify(tolerance=0.003)
+                #     geo_j = sim_geo.to_json()
+                #     geo_j = folium.GeoJson(data=geo_j, style_function=lambda x: {"fillColor": "orange"})
+                #     folium.Popup(r["WK_NAAM"]).add_to(geo_j)
+                #     geo_j.add_to(m)
+                # output = st_folium(m)
+                # st.write(output)
                 complete = True
-            except:
-                st.write("Helaas is er voor deze gemeente geen data beschikbaar")
-                complete = False
+            # except:
+            #     st.write("Helaas is er voor deze gemeente geen data beschikbaar")
+            #     complete = False
         if complete:
             st.pyplot(fig)
 elif authentication_status == False:

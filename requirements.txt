@@ -12,3 +12,5 @@ xlrd
 openpyxl
 streamlit-folium
 folium
+matplotlib 
+mapclassify
