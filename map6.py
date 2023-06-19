@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from xgboost import XGBRegressor
+# from xgboost import XGBRegressor
 from sklearn.ensemble import BaggingRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
