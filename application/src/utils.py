@@ -8,7 +8,7 @@ import pandas as pd
 import numpy as np
 import geopandas as gpd
 import matplotlib.pyplot as plt
-from xgboost import XGBRegressor
+# from xgboost import XGBRegressor
 from sklearn.metrics import mean_squared_error
 from sklearn.model_selection import train_test_split
 import smtplib
@@ -33,7 +33,6 @@ def auth():
     )
 
     return authenticator, config
-
 
 
 @st.cache_data
@@ -67,7 +66,7 @@ def get_data():
 
     wijk_geo['WK_CODE'] = wijk_geo['WK_CODE'].apply(lambda x: x[2:]).astype('float')
     wijk_geo['GM_CODE'] = wijk_geo['GM_CODE'].apply(lambda x: x[2:]).astype('float')
-    df = wijk_geo.merge(df, left_on=['WK_CODE', 'GM_CODE'], right_on=['wijk', 'gemeentecode'], how='left')
+    df = df.merge(wijk['geo'], left_on=['WK_CODE', 'GM_CODE'], right_on=['wijk', 'gemeentecode'], how='left')
     for col in df.columns:
         df[col] = df[col].apply(lambda x: x if x != int(-99999999) else np.nan)
     # wijk_final.to_csv('data_combined.csv', index=False)
