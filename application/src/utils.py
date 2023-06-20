@@ -66,7 +66,7 @@ def get_data():
 
     wijk_geo['WK_CODE'] = wijk_geo['WK_CODE'].apply(lambda x: x[2:]).astype('float')
     wijk_geo['GM_CODE'] = wijk_geo['GM_CODE'].apply(lambda x: x[2:]).astype('float')
-    df = df.merge(wijk['geo'], left_on=['WK_CODE', 'GM_CODE'], right_on=['wijk', 'gemeentecode'], how='left')
+    df = df.merge(wijk_geo, left_on=['wijk', 'gemeentecode'], right_on=['WK_CODE', 'GM_CODE'], how='left')
     for col in df.columns:
         df[col] = df[col].apply(lambda x: x if x != int(-99999999) else np.nan)
     # wijk_final.to_csv('data_combined.csv', index=False)
