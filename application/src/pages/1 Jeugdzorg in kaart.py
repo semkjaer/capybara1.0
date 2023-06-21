@@ -82,6 +82,7 @@ if st.session_state["authentication_status"]:
             complete = True
         else:
             # try:
+<<<<<<< HEAD
                 plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
                 output = st_folium(plt)
                 st.write(output)
@@ -98,9 +99,27 @@ if st.session_state["authentication_status"]:
                 #     geo_j.add_to(m)
                 # output = st_folium(m)
                 # st.write(output)
+=======
+                wijk = st.selectbox("Selecteer wijk (optioneel):", np.append(["Gehele gemeente"], gdf[gdf.GM_NAAM == option].WK_NAAM.unique()))
+                gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[0]
+                if wijk != "Gehele gemeente":
+                    wijkcode = gdf[gdf.WK_NAAM == wijk].WK_CODE.unique()[0]
+                    plt = gdf[gdf.WK_CODE == wijkcode].explore(column="perc_jhzv",tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
+                    output = st_folium(plt, returned_objects=[])
+                    st.write(output)
+
+                else:
+                    plt = gdf[gdf.gemeentecode == gemeentecode].explore(column="perc_jhzv", tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
+                    output = st_folium(plt, returned_objects=[])
+                    # this prevents a goofy error and the returning of single brackets with nothing inside because the st_folium library doesnt work well
+                    try:
+                         st.write(output[0])
+                    except:
+                         pass
+>>>>>>> c2b270325e653ca8eaf8563111b0c19b8885226d
                 complete = True
             # except:
-            #     st.write("Helaas is er voor deze gemeente geen data beschikbaar")
+            #     st.write("Helaas is er voor deze gemeente of wijken geen data beschikbaar")
             #     complete = False
         if complete:
             st.pyplot(fig)
