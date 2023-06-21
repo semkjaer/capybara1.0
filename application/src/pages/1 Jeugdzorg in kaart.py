@@ -71,19 +71,18 @@ if st.session_state["authentication_status"]:
         st.write("Hier kan je kaarten bekijken")
         # capitalize the first character of username
         username = username.capitalize()
-        if username in gdf.GM_NAAM.unique():
+        if username in gdf.gm_naam.unique():
             # st.write(f"Je bent ingelogd als {username}")
-            option = st.selectbox("Selecteer gebied:", np.append([username], gdf.GM_NAAM.unique()[1:]))
+            option = st.selectbox("Selecteer gebied:", np.append([username], gdf.gm_naam.unique()[1:]))
         else:
             # st.write(f"Je bent ingelogd als {username}")
-            option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.GM_NAAM.unique()[1:]))
+            option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
         if option == "Nederland":
-            gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+            gdf.plot(ax=ax, column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
             complete = True
         else:
             # try:
-                gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[0]
-                plt = gdf[gdf.gemeentecode == gemeentecode].explore(column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+                plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
                 output = st_folium(plt)
                 st.write(output)
                 # df = gdf[gdf.gemeentecode == gemeentecode]

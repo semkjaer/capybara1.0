@@ -37,40 +37,12 @@ def auth():
 
 @st.cache_data
 def get_data():
-    file = pd.ExcelFile('Wijkdata_Jeugdhulp_in_de_wijk.ods')
-
-    sheet_names = file.sheet_names
-
-    wijk = pd.read_excel(file, sheet_name=sheet_names[-3])  # wijk
-    gebr = pd.read_excel(file, sheet_name=sheet_names[-2])  # gebruik
-    det = pd.read_excel(file, sheet_name=sheet_names[-1])  # determinanten
-
-    file.close()
-
-    df = det.copy()
-    # als je wijk en gemeentecode hebt heb je wijkcode en gemeentenaam niet nodig
-    df = df.merge(wijk[['wijk', 'gemeentecode']], on='wijk', how='left')
-    # per_jhzv : aandeel jeugdigen met jeugdhulp zonder verblijf, waargenomen -> target variable
-    df = df.merge(gebr[['wijk', 'perc_jhzv']], on='wijk', how='left')
-
-    for col in df.columns:
-        df[col] = df[col].apply(lambda x: x if x != '.' else np.nan)
-
-    # hun schatting root mean squared error (residu = schatting - waargenomen)
-    for col in gebr.columns:
-        gebr[col] = gebr[col].apply(lambda x: x if x != '.' else np.nan)
-
-    # buurt_geo = gpd.read_file('./WijkBuurtkaart_2022_v1/buurt_2022_v1.shp')
-    wijk_geo = gpd.read_file('./WijkBuurtkaart_2022_v1/wijk_2022_v1.shp')
-    # gemeente_geo = gpd.read_file('./WijkBuurtkaart_2022_v1/gemeente_2022_v1.shp')
-
-    wijk_geo['WK_CODE'] = wijk_geo['WK_CODE'].apply(lambda x: x[2:]).astype('float')
-    wijk_geo['GM_CODE'] = wijk_geo['GM_CODE'].apply(lambda x: x[2:]).astype('float')
-    df = df.merge(wijk_geo, left_on=['wijk', 'gemeentecode'], right_on=['WK_CODE', 'GM_CODE'], how='left')
-    for col in df.columns:
-        df[col] = df[col].apply(lambda x: x if x != int(-99999999) else np.nan)
-    # wijk_final.to_csv('data_combined.csv', index=False)
-
+    df = pd.read_csv('data.csv')
+    geo = gpd.read_file('./gemeenteWijk.shp')
+    df = df[df.year == 2021]
+    df = geo.merge(df, left_on=['gwb'], right_on=['gwb_code_10'], how='left')
+    df = df.dropna(subset=['geometry'])
+    print(df)
     return df
 
 
