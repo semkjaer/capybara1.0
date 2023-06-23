@@ -78,7 +78,16 @@ if st.session_state["authentication_status"]:
             # st.write(f"Je bent ingelogd als {username}")
             option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
         if option == "Nederland":
-            gdf.plot(ax=ax, column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+            # plt = gdf.explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+            # plt.save('test-nederland.html')
+            # output = st_folium(plt)
+            # st.write(output)
+            path_to_html = "./test.html" 
+
+            # Read file and keep in variable
+            with open(path_to_html,'r') as f: 
+                html_data = f.read()
+
             complete = True
         else:
             # try:
@@ -108,12 +117,11 @@ if st.session_state["authentication_status"]:
                 # Read file and keep in variable
                 with open(path_to_html,'r') as f: 
                     html_data = f.read()
-
                 ## Show in webpage
-                st.header("Show an external HTML")
-                st.components.v1.html(html_data,height=200)
-                complete = False
+                complete = True
         if complete:
-            st.pyplot(fig)
+            st.header("Show an external HTML")
+            st.components.v1.html(html_data,height=200)
+            # st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')
