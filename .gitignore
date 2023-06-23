@@ -1,4 +1,5 @@
 .env
 WijkBuurtkaart_2022_v1/
 application/config.yaml
-*.pyc 
+*.pyc
+application/src/__pycache__/*.pyc
