@@ -65,3 +65,13 @@ if st.session_state["authentication_status"]:
     # st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')
+
+path_to_html = "./test.html" 
+
+# Read file and keep in variable
+with open(path_to_html,'r') as f: 
+    html_data = f.read()
+
+## Show in webpage
+st.header("Show an external HTML")
+st.components.v1.html(html_data,height=200)

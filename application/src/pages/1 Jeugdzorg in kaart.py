@@ -97,9 +97,6 @@ if st.session_state["authentication_status"]:
                     except:
                          pass
                 complete = True
-            # except:
-            #     st.write("Helaas is er voor deze gemeente of wijken geen data beschikbaar")
-            #     complete = False
         if complete:
             st.pyplot(fig)
 elif authentication_status == False:

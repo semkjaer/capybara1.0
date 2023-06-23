@@ -2,3 +2,4 @@
 WijkBuurtkaart_2022_v1/
 application/config.yaml
 *.pyc 
+data/
