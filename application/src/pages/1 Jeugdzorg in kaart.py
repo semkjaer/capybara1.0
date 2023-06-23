@@ -82,10 +82,10 @@ if st.session_state["authentication_status"]:
             complete = True
         else:
             # try:
-                plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
-                plt.save('test.html')
-                output = st_folium(plt)
-                st.write(output)
+                # plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+                # plt.save('test.html')
+                # output = st_folium(plt)
+                # st.write(output)
                 # TODO implementeerd ondeerstaande code (of selecteer wijk, zelfde manier als gemeente?)
                 # wijk = st.selectbox("Selecteer wijk (optioneel):", np.append(["Gehele gemeente"], gdf[gdf.GM_NAAM == option].WK_NAAM.unique()))
                 # gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[0]
@@ -103,7 +103,16 @@ if st.session_state["authentication_status"]:
                 #          st.write(output[0])
                 #     except:
                 #          pass
-                complete = True
+                path_to_html = "./test.html" 
+
+                # Read file and keep in variable
+                with open(path_to_html,'r') as f: 
+                    html_data = f.read()
+
+                ## Show in webpage
+                st.header("Show an external HTML")
+                st.components.v1.html(html_data,height=200)
+                complete = False
         if complete:
             st.pyplot(fig)
 elif authentication_status == False:
