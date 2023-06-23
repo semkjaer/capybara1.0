@@ -83,37 +83,24 @@ if st.session_state["authentication_status"]:
             complete = False
         else:
             # try:
-                # plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
-                # plt.save('test.html')
-                # output = st_folium(plt)
-                # st.write(output)
-                # TODO implementeerd ondeerstaande code (of selecteer wijk, zelfde manier als gemeente?)
-                # wijk = st.selectbox("Selecteer wijk (optioneel):", np.append(["Gehele gemeente"], gdf[gdf.GM_NAAM == option].WK_NAAM.unique()))
-                # gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[0]
-                # if wijk != "Gehele gemeente":
-                #     wijkcode = gdf[gdf.WK_NAAM == wijk].WK_CODE.unique()[0]
-                #     plt = gdf[gdf.WK_CODE == wijkcode].explore(column="perc_jhzv",tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
-                #     output = st_folium(plt, returned_objects=[])
-                #     st.write(output)
+            wijk = st.selectbox("Selecteer wijk (optioneel):",
+                                np.append(["Gehele gemeente"],
+                                gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
 
-                # else:
-                #     plt = gdf[gdf.gemeentecode == gemeentecode].explore(column="perc_jhzv", tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
-                #     output = st_folium(plt, returned_objects=[])
-                #     # this prevents a goofy error and the returning of single brackets with nothing inside because the st_folium library doesnt work well
-                #     try:
-                #          st.write(output[0])
-                #     except:
-                #          pass
+            if wijk == "Gehele gemeente":
                 path_to_html = f"./application/src/maps/{option}.html" 
 
-                # Read file and keep in variable
-                with open(path_to_html,'r') as f: 
-                    html_data = f.read()
-                ## Show in webpage
                 complete = True
+            else:
+                code = gdf[(gdf.regio == wijk)].gwb_code_10.unique()[0]
+                path_to_html = f"./application/src/maps/{code}.html" 
+
+                complete = False
         if complete:
+            with open(path_to_html,'r') as f: 
+                html_data = f.read()
+
             st.header("Show an external HTML")
             st.components.v1.html(html_data,height=600)
-            # st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')
