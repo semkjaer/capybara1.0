@@ -83,6 +83,7 @@ if st.session_state["authentication_status"]:
         else:
             # try:
                 plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+                plt.save('test.html')
                 output = st_folium(plt)
                 st.write(output)
                 # TODO implementeerd ondeerstaande code (of selecteer wijk, zelfde manier als gemeente?)

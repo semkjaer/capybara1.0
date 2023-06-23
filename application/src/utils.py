@@ -42,7 +42,7 @@ def get_data():
     df = df[df.year == 2021]
     df = geo.merge(df, left_on=['gwb'], right_on=['gwb_code_10'], how='left')
     df = df.dropna(subset=['geometry'])
-    print(df)
+
     return df
 
 
