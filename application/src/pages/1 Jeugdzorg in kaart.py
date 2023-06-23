@@ -71,27 +71,25 @@ if st.session_state["authentication_status"]:
         st.write("Hier kan je kaarten bekijken")
         # capitalize the first character of username
         username = username.capitalize()
-        if username in gdf.GM_NAAM.unique():
+        if username in gdf.gm_naam.unique():
             # st.write(f"Je bent ingelogd als {username}")
-            option = st.selectbox("Selecteer gebied:", np.append([username], gdf.GM_NAAM.unique()[1:]))
+            option = st.selectbox("Selecteer gebied:", np.append([username], gdf.gm_naam.unique()[1:]))
         else:
             # st.write(f"Je bent ingelogd als {username}")
-            option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.GM_NAAM.unique()[1:]))
+            option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
         if option == "Nederland":
-            gdf.plot(ax=ax, column="AANT_INW",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+            gdf.plot(ax=ax, column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
             complete = True
         else:
             # try:
                 wijk = st.selectbox("Selecteer wijk (optioneel):", np.append(["Gehele gemeente"], gdf[gdf.GM_NAAM == option].WK_NAAM.unique()))
-                gemeentecode = gdf[gdf.GM_NAAM == option].gemeentecode.unique()[0]
                 if wijk != "Gehele gemeente":
-                    wijkcode = gdf[gdf.WK_NAAM == wijk].WK_CODE.unique()[0]
-                    plt = gdf[gdf.WK_CODE == wijkcode].explore(column="perc_jhzv",tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
+                    plt = gdf[(gdf.wk_naam == option) & (gdf.recs == 'Wijk')].explore(column="perc_jhzv",tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
                     output = st_folium(plt, returned_objects=[])
                     st.write(output)
 
                 else:
-                    plt = gdf[gdf.gemeentecode == gemeentecode].explore(column="perc_jhzv", tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
+                    plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="perc_jhzv", tooltip=["WK_NAAM", "woonwaarde", "perc_jhzv"], popup=["WK_NAAM", "woonwaarde", "perc_jhzv"], legend="False", legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"}, vmin=4, vmax=15)
                     output = st_folium(plt, returned_objects=[])
                     # this prevents a goofy error and the returning of single brackets with nothing inside because the st_folium library doesnt work well
                     try:
