@@ -13,7 +13,7 @@ from streamlit_folium import st_folium
 import folium
 
 from utils import auth, logo, get_data
-
+st.set_page_config(page_title='PinkCapybara', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
 logo()
 
 import base64
@@ -62,9 +62,8 @@ if os.path.exists('./data_combined.csv'):
 
 gdf = get_data()
 # gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
-# fig, ax = plt.subplots(figsize = (12,12))
-# ax.set_axis_off()
-# gdf = pd.read_csv('data.csv')
+# plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
+# plt.save('test.html')
 
 if st.session_state["authentication_status"]:
     with st.expander('Home page', expanded=True):
@@ -79,17 +78,9 @@ if st.session_state["authentication_status"]:
             # st.write(f"Je bent ingelogd als {username}")
             option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
         if option == "Nederland":
-            # plt = gdf.explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
-            # plt.save('test-nederland.html')
-            # output = st_folium(plt)
-            # st.write(output)
-            path_to_html = "./test.html" 
+            st.image('./application/src/maps/Nederland.png')
 
-            # Read file and keep in variable
-            with open(path_to_html,'r') as f: 
-                html_data = f.read()
-
-            complete = True
+            complete = False
         else:
             # try:
                 # plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
@@ -113,7 +104,7 @@ if st.session_state["authentication_status"]:
                 #          st.write(output[0])
                 #     except:
                 #          pass
-                path_to_html = "./test.html" 
+                path_to_html = f"./application/src/maps/{option}.html" 
 
                 # Read file and keep in variable
                 with open(path_to_html,'r') as f: 
@@ -122,7 +113,7 @@ if st.session_state["authentication_status"]:
                 complete = True
         if complete:
             st.header("Show an external HTML")
-            st.components.v1.html(html_data,height=200)
+            st.components.v1.html(html_data,height=600)
             # st.pyplot(fig)
 elif authentication_status == False:
      st.error('Username/password is incorrect')

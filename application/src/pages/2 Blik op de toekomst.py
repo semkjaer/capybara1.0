@@ -8,6 +8,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from utils import auth, get_data, logo, model
 
+st.set_page_config(page_title='PinkCapybara', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
 logo()
 
 import base64
