@@ -38,10 +38,10 @@ def auth():
 @st.cache_data
 def get_data():
     df = pd.read_csv('data.csv')
-    geo = gpd.read_file('./gemeenteWijk.shp')
-    df = df[df.year == 2021]
-    df = geo.merge(df, left_on=['gwb'], right_on=['gwb_code_10'], how='left')
-    df = df.dropna(subset=['geometry'])
+    # geo = gpd.read_file('./gemeenteWijk.shp')
+    # df = df[df.year == 2021]
+    # df = geo.merge(df, left_on=['gwb'], right_on=['gwb_code_10'], how='left')
+    # df = df.dropna(subset=['geometry'])
 
     return df
 
