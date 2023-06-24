@@ -76,31 +76,42 @@ if st.session_state["authentication_status"]:
             option = st.selectbox("Selecteer gebied:", np.append([username], gdf.gm_naam.unique()[1:]))
         else:
             # st.write(f"Je bent ingelogd als {username}")
-            option = st.selectbox("Selecteer gebied:", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
-        if option == "Nederland":
-            st.image('./application/src/maps/Nederland.png')
-
-            complete = False
-        else:
-            # try:
-            wijk = st.selectbox("Selecteer wijk (optioneel):",
-                                np.append(["Gehele gemeente"],
-                                gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
-
-            if wijk == "Gehele gemeente":
-                path_to_html = f"./application/src/maps/{option}.html" 
-
-                complete = True
+            option = st.selectbox("", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
+            if option == "Nederland":
+                path_to_html = f"./maps/NL00.html"
             else:
-                code = gdf[(gdf.regio == wijk)].gwb_code_10.unique()[0]
-                path_to_html = f"./application/src/maps/{code}.html" 
+                code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
+                path_to_html = f"./maps/{code}.html"
 
-                complete = False
-        if complete:
             with open(path_to_html,'r') as f: 
                 html_data = f.read()
 
-            st.header("Show an external HTML")
             st.components.v1.html(html_data,height=600)
+        # if option == "Nederland":
+        #     # st.image('./maps/NL00.html')
+
+        #     complete = False
+        # else:
+            # # try:
+            # wijk = st.selectbox("Selecteer wijk (optioneel):",
+            #                     np.append(["Gehele gemeente"],
+            #                     gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
+
+            # if wijk == "Gehele gemeente":
+            # code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
+            # path_to_html = f"./maps/{code}.html" 
+
+            # complete = True
+            # else:
+            #     code = gdf[(gdf.regio == wijk)].gwb_code_10.unique()[0]
+            #     path_to_html = f"./maps/{code}.html" 
+
+            #     complete = False
+        # if complete:
+        #     with open(path_to_html,'r') as f: 
+        #         html_data = f.read()
+
+        #     st.header("Show an external HTML")
+        #     st.components.v1.html(html_data,height=600)
 elif authentication_status == False:
      st.error('Username/password is incorrect')
