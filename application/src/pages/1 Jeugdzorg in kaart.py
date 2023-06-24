@@ -79,14 +79,15 @@ if st.session_state["authentication_status"]:
             option = st.selectbox("", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
             if option == "Nederland":
                 path_to_html = f"./maps/NL00.html"
+                st.image('./map.png')
             else:
                 code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
                 path_to_html = f"./maps/{code}.html"
 
-            with open(path_to_html,'r') as f: 
-                html_data = f.read()
+                with open(path_to_html,'r') as f: 
+                    html_data = f.read()
 
-            st.components.v1.html(html_data,height=600)
+                st.components.v1.html(html_data,height=600)
         # if option == "Nederland":
         #     # st.image('./maps/NL00.html')
 
