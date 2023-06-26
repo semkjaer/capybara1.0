@@ -10,9 +10,10 @@ import uuid
 import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit_folium import st_folium
+import streamlit.components.v1 as components
 import folium
 
-from utils import auth, logo, get_data
+from utils import auth, logo, get_data, plot
 st.set_page_config(page_title='PinkCapybara', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
 logo()
 
@@ -61,58 +62,22 @@ if os.path.exists('./data_combined.csv'):
          df = gpd.read_csv('./data_combined.csv')
 
 gdf = get_data()
-# gdf = gpd.GeoDataFrame(df, crs="EPSG:28992", geometry=df.geometry)
-# plt = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].explore(column="a_inw",legend=True, legend_kwds={"label": "Aantal mensen per gemeente", "orientation": "horizontal"})
-# plt.save('test.html')
 
 if st.session_state["authentication_status"]:
     with st.expander('Home page', expanded=True):
         st.title("Jeugdzorg in kaart")
         st.write("Hier kan je kaarten bekijken")
-        # capitalize the first character of username
         username = username.capitalize()
         if username in gdf.gm_naam.unique():
-            # st.write(f"Je bent ingelogd als {username}")
             option = st.selectbox("Selecteer gebied:", np.append([username], gdf.gm_naam.unique()[1:]))
         else:
-            # st.write(f"Je bent ingelogd als {username}")
             option = st.selectbox("", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
             if option == "Nederland":
-                path_to_html = f"./maps/NL00.html"
+                # plot('NL00')
                 st.image('./map.png')
             else:
                 code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
-                path_to_html = f"./maps/{code}.html"
+                plot(code)
 
-                with open(path_to_html,'r') as f: 
-                    html_data = f.read()
-
-                st.components.v1.html(html_data,height=600)
-        # if option == "Nederland":
-        #     # st.image('./maps/NL00.html')
-
-        #     complete = False
-        # else:
-            # # try:
-            # wijk = st.selectbox("Selecteer wijk (optioneel):",
-            #                     np.append(["Gehele gemeente"],
-            #                     gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
-
-            # if wijk == "Gehele gemeente":
-            # code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
-            # path_to_html = f"./maps/{code}.html" 
-
-            # complete = True
-            # else:
-            #     code = gdf[(gdf.regio == wijk)].gwb_code_10.unique()[0]
-            #     path_to_html = f"./maps/{code}.html" 
-
-            #     complete = False
-        # if complete:
-        #     with open(path_to_html,'r') as f: 
-        #         html_data = f.read()
-
-        #     st.header("Show an external HTML")
-        #     st.components.v1.html(html_data,height=600)
 elif authentication_status == False:
      st.error('Username/password is incorrect')

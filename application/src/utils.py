@@ -14,6 +14,7 @@ from sklearn.model_selection import train_test_split
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import streamlit.components.v1 as components
 
 @st.cache_resource
 def logo():
@@ -44,6 +45,13 @@ def get_data():
     # df = df.dropna(subset=['geometry'])
 
     return df
+
+
+def plot(code):
+    html_url = f"https://pinkcapybucket.s3.eu-central-1.amazonaws.com/maps/{code}.html"
+    iframe_html = f'<iframe src="{html_url}" width="100%" height="800px" frameborder="0"></iframe>'
+
+    return components.html(iframe_html, height=800)
 
 
 def model(df):
