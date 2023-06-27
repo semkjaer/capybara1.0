@@ -40,14 +40,35 @@ if 'key' not in st.session_state:
 st.markdown('''
 <style>
 [data-testid="stHeader"] {
-        display: none;
+    display: none;
 }
 [data-baseweb="base-input"] {
-        border:1px solid black; 
+    border:1px solid black; 
 }
-.streamlit-expander { 
-        background-color: #FFFFFF; 
+.streamlit-expander {
+    background-color: #FFFFFF; 
 }
+[data-baseweb="select"] {
+    margin-top: -40px;
+    margin-bottom: -20px;
+}
+.block-container {
+    padding-top: 0px !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    margin-top: -70px !important;
+}
+.streamlit-expanderContent {
+    margin-top: -40px !important;
+}
+.row-widget .stButton {
+    margin-top: 60px !important;
+    margin-left: -40px !important;
+}
+[data-testid="stSidebarNav"] {  
+    margin-bottom: 70px !important;
+}
+section[data-testid="stSidebar"] .css-ng1t4o {{width: 14rem;}}
 </style>
 ''', unsafe_allow_html=True)
 
@@ -64,19 +85,27 @@ if os.path.exists('./data_combined.csv'):
 gdf = get_data()
 
 if st.session_state["authentication_status"]:
-    with st.expander('Home page', expanded=True):
-        st.title("Jeugdzorg in kaart")
-        st.write("Hier kan je kaarten bekijken")
+    with st.expander('', expanded=True):
+        st.markdown('<p style="background-color:#FFFFFF;color:rgb(0, 71, 171);font-size:28px;border-radius:2%;">Jeugdzorg in kaart</p>', unsafe_allow_html=True)
         username = username.capitalize()
+        col1, col2, _ = st.columns(3)
         if username in gdf.gm_naam.unique():
-            option = st.selectbox("Selecteer gebied:", np.append([username], gdf.gm_naam.unique()[1:]))
+            with col1:
+                option = st.selectbox("Selecteer gebied:", np.append([username], gdf.gm_naam.unique()[1:]))
         else:
-            option = st.selectbox("", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
+            with col1:
+                option = st.selectbox("", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
             if option == "Nederland":
-                st.image('./map.png')
+                plot('NL00')
             else:
+                with col2:
+                    wijk = st.selectbox("Selecteer wijk (optioneel):", np.append(["Gehele gemeente"], gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
                 code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
-                plot(code)
+                if (wijk == "Selecteer wijk (optioneel):"):
+                    pass
+                    # plot_wijk(code, wijk)
+                else:
+                    plot(code)
 
 elif authentication_status == False:
      st.error('Username/password is incorrect')

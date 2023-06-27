@@ -47,6 +47,23 @@ st.markdown('''
 .streamlit-expander { 
         background-color: #FFFFFF; 
 }
+[data-baseweb="select"] {
+    margin-top: -40px;
+    margin-bottom: -20px;
+}
+.block-container {
+    padding-top: 0px !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    margin-top: -70px !important;
+}
+.streamlit-expanderContent {
+    margin-top: -40px !important;
+}
+[kind="secondary"] {
+    margin-top: 60px !important;
+    margin-left: -40px !important;
+}
 </style>
 ''', unsafe_allow_html=True)
 
@@ -66,20 +83,26 @@ if st.session_state["authentication_status"]:
         shades_of_pink = ['#FC6C85', '#FC8EAC', '#F88379', '#FF9999', '#FFD1DC', '#FFB6C1', '#FFB7C5', 
                     '#FFC1CC', '#F4C2C2', '#E75480', '#FF007F', '#A94064', '#FF6EC7', '#DE5D83', 
                     '#FF69B4', '#FFA6C9', '#FF8E8E', '#F4C2C2', '#FFBCD9', '#EFBBCC', '#F64A8A']
+        col1, _, _ = st.columns(3)
         if username in ts_total.gm_naam.unique():
-            option = st.selectbox("Selecteer gebied:", np.append([username], ts_total.gm_naam.unique()[1:]))
+            with col1:
+                option = st.selectbox("Selecteer gebied:", np.append([username], ts_total.gm_naam.unique()[1:]))
         else:
-            option = st.selectbox("Selecteer gebied:", ts_total.gm_naam.unique())
+            with col1:
+                option = st.selectbox("Selecteer gebied:", ts_total.gm_naam.unique())
+
+        col1, col2 = st.columns(2)
+        
         ts_plot = ts_total[ts_total.gm_naam == option]
         
-        # plot 1
         include_list = list(ts_plot.regio[:1])
 
         pio.renderers.default="notebook"
         fig = px.line(ts_plot, x="year", y="p_jz_tn", color="regio")
         fig.for_each_trace(lambda trace: trace.update(visible="legendonly") 
                         if trace.name not in include_list else ())
-        st.plotly_chart(fig)
+        with col1:
+                st.plotly_chart(fig)
 
         ts_bar_23_sorted = ts_plot.loc[(ts_plot['year'] == '2023-01-01')].sort_values(by = 'p_jz_tn', ascending=False)
 
@@ -93,7 +116,8 @@ if st.session_state["authentication_status"]:
                         yaxis_title="Wijk")
 
         fig.update_traces(marker_color='#E2007A')
-        st.plotly_chart(fig)
+        with col2:
+                st.plotly_chart(fig)
 
         ts_pie = ts_total[ts_total.gm_naam == option]
         ts_23_sorted = ts_pie.loc[(ts_pie['year'] == '2023-01-01')]
@@ -103,7 +127,8 @@ if st.session_state["authentication_status"]:
                 values=ts_23_sorted['p_jz_tn'][:20].round(2).sort_values(ascending=True), 
                 title='Wijken en hun voorspelde percentage jongeren met jeugdzorg in 2023')
         fig.update_layout(colorway=shades_of_pink)
-        st.plotly_chart(fig)
+        with col1:
+                st.plotly_chart(fig)
 
         fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted['a_soz_ao'].index][:20].sort_values(ascending=True), 
                 y=ts_22_sorted['a_soz_ao'][:20].round(2).sort_values(ascending=True), 
@@ -118,7 +143,8 @@ if st.session_state["authentication_status"]:
         fig.update_layout(xaxis_title="Wijken",
                         yaxis_title="Aantal WAO-gerechtigden")
         fig.update_traces(marker_color='#E2007A')
-        st.plotly_chart(fig)
+        with col2:
+                st.plotly_chart(fig)
 
         fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted['bev_dich'].index][:20].sort_values(ascending=True), 
                 y=ts_22_sorted['bev_dich'][:20].round(2).sort_values(ascending=True), 
@@ -133,9 +159,10 @@ if st.session_state["authentication_status"]:
         fig.update_layout(xaxis_title="Wijken",
                         yaxis_title="Bevolkingsdichtheid")
         fig.update_traces(marker_color='#E2007A')
-        st.plotly_chart(fig)
-
-        st.image('importances.png')
+        with col1:
+                st.plotly_chart(fig)
+        with col2:
+                st.image('importances.png')
 
 
 elif authentication_status == False:

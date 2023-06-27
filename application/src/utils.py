@@ -51,7 +51,7 @@ def plot(code):
     html_url = f"https://pinkcapybucket.s3.eu-central-1.amazonaws.com/maps/{code}.html"
     iframe_html = f'<iframe src="{html_url}" width="100%" height="800px" frameborder="0"></iframe>'
 
-    return components.html(iframe_html, height=800)
+    return components.html(iframe_html, height=680)
 
 
 def model(df):
