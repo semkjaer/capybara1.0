@@ -12,7 +12,7 @@ import plotly.express as px
 from utils import auth, get_data, logo, model
 import matplotlib.pyplot as plt
 
-st.set_page_config(page_title='PinkCapybara', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
+st.set_page_config(page_title='PinkCapybara', page_icon='favicon.ico', layout='wide', initial_sidebar_state='auto')
 logo()
 
 import base64
@@ -39,13 +39,13 @@ if 'key' not in st.session_state:
 st.markdown('''
 <style>
 [data-testid="stHeader"] {
-        display: none;
+    display: none;
 }
 [data-baseweb="base-input"] {
-        border:1px solid black; 
+    border:1px solid black; 
 }
 .streamlit-expander { 
-        background-color: #FFFFFF; 
+    background-color: #FFFFFF; 
 }
 [data-baseweb="select"] {
     margin-top: -40px;
@@ -60,9 +60,12 @@ st.markdown('''
 .streamlit-expanderContent {
     margin-top: -40px !important;
 }
-[kind="secondary"] {
-    margin-top: 60px !important;
-    margin-left: -40px !important;
+[data-testid="stSidebarNav"] {  
+    margin-bottom: 70px !important;
+}
+[data-testid="stSidebar"][aria-expanded="true"] {
+    min-width: 225px !important;
+    max-width: 225px !important;
 }
 </style>
 ''', unsafe_allow_html=True)

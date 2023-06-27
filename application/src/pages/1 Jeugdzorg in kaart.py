@@ -14,7 +14,7 @@ import streamlit.components.v1 as components
 import folium
 
 from utils import auth, logo, get_data, plot
-st.set_page_config(page_title='PinkCapybara', page_icon = 'favicon.ico', layout = 'wide', initial_sidebar_state = 'auto')
+st.set_page_config(page_title='PinkCapybara', page_icon='favicon.ico', layout='wide', initial_sidebar_state='auto')
 logo()
 
 import base64
@@ -69,8 +69,8 @@ st.markdown('''
     margin-bottom: 70px !important;
 }
 [data-testid="stSidebar"][aria-expanded="true"] {
-    min-width: 200px !important;
-    max-width: 200px !important;
+    min-width: 225px !important;
+    max-width: 225px !important;
 }
 </style>
 ''', unsafe_allow_html=True)

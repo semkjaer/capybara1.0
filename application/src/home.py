@@ -57,6 +57,10 @@ st.markdown('''
 .streamlit-expander { 
         background-color: #FFFFFF; 
 }
+[data-testid="stSidebar"][aria-expanded="true"] {
+    min-width: 225px !important;
+    max-width: 225px !important;
+}
 </style>
 ''', unsafe_allow_html=True)
 authenticator, config = auth()
