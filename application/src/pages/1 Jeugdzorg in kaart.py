@@ -68,7 +68,10 @@ st.markdown('''
 [data-testid="stSidebarNav"] {  
     margin-bottom: 70px !important;
 }
-section[data-testid="stSidebar"] .css-ng1t4o {{width: 14rem;}}
+[data-testid="stSidebar"][aria-expanded="true"] {
+    min-width: 200px !important;
+    max-width: 200px !important;
+}
 </style>
 ''', unsafe_allow_html=True)
 

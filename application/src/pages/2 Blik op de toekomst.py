@@ -102,7 +102,7 @@ if st.session_state["authentication_status"]:
         fig.for_each_trace(lambda trace: trace.update(visible="legendonly") 
                         if trace.name not in include_list else ())
         with col1:
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
 
         ts_bar_23_sorted = ts_plot.loc[(ts_plot['year'] == '2023-01-01')].sort_values(by = 'p_jz_tn', ascending=False)
 
@@ -117,7 +117,7 @@ if st.session_state["authentication_status"]:
 
         fig.update_traces(marker_color='#E2007A')
         with col2:
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
 
         ts_pie = ts_total[ts_total.gm_naam == option]
         ts_23_sorted = ts_pie.loc[(ts_pie['year'] == '2023-01-01')]
@@ -128,7 +128,7 @@ if st.session_state["authentication_status"]:
                 title='Wijken en hun voorspelde percentage jongeren met jeugdzorg in 2023')
         fig.update_layout(colorway=shades_of_pink)
         with col1:
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
 
         fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted['a_soz_ao'].index][:20].sort_values(ascending=True), 
                 y=ts_22_sorted['a_soz_ao'][:20].round(2).sort_values(ascending=True), 
@@ -144,7 +144,7 @@ if st.session_state["authentication_status"]:
                         yaxis_title="Aantal WAO-gerechtigden")
         fig.update_traces(marker_color='#E2007A')
         with col2:
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
 
         fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted['bev_dich'].index][:20].sort_values(ascending=True), 
                 y=ts_22_sorted['bev_dich'][:20].round(2).sort_values(ascending=True), 
@@ -160,7 +160,7 @@ if st.session_state["authentication_status"]:
                         yaxis_title="Bevolkingsdichtheid")
         fig.update_traces(marker_color='#E2007A')
         with col1:
-                st.plotly_chart(fig)
+                st.plotly_chart(fig, use_container_width=True)
         with col2:
                 st.image('importances.png')
 
