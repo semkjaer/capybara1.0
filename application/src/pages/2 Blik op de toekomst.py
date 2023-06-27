@@ -104,6 +104,24 @@ if st.session_state["authentication_status"]:
         fig = px.line(ts_plot, x="year", y="p_jz_tn", color="regio")
         fig.for_each_trace(lambda trace: trace.update(visible="legendonly") 
                         if trace.name not in include_list else ())
+
+        fig.update_layout(
+                shapes=[
+                        dict(
+                        type="rect",
+                        xref="x",
+                        yref="paper",
+                        x0='2022',
+                        y0=0,
+                        x1='2023',
+                        y1=1,
+                        fillcolor="blue",
+                        opacity=0.1,
+                        layer="below",
+                        line_width=0,
+                        )
+                ]
+        )
         with col1:
                 st.plotly_chart(fig, use_container_width=True)
 
