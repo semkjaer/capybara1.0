@@ -73,7 +73,6 @@ if st.session_state["authentication_status"]:
         else:
             option = st.selectbox("", np.append(["Nederland"], gdf.gm_naam.unique()[1:]))
             if option == "Nederland":
-                # plot('NL00')
                 st.image('./map.png')
             else:
                 code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
