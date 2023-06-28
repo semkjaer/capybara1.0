@@ -11,6 +11,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 from streamlit_folium import st_folium
 import streamlit.components.v1 as components
+import json
 import folium
 
 from utils import auth, logo, get_data, plot
@@ -102,13 +103,13 @@ if st.session_state["authentication_status"]:
                 plot('NL00')
             else:
                 with col2:
-                    wijk = st.selectbox("Selecteer wijk (optioneel):", np.append(["Gehele gemeente"], gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
+                    wijk = st.selectbox("", np.append(["Selecteer wijk (optioneel):"], gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
                 code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
                 if (wijk == "Selecteer wijk (optioneel):"):
-                    pass
-                    # plot_wijk(code, wijk)
+                    plot(code)
                 else:
                     plot(code)
+
 
 elif authentication_status == False:
      st.error('Username/password is incorrect')
