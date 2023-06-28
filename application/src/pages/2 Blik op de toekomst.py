@@ -42,15 +42,16 @@ st.markdown('''
     display: none;
 }
 [data-baseweb="base-input"] {
-    border:1px solid black; 
+    border:1px solid #0047AB; 
 }
 .streamlit-expander { 
     background-color: #FFFFFF; 
 }
 [data-baseweb="select"] {
     margin-top: -40px;
-    border:1px solid grey;
-
+    border:1px solid #0047AB;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
+    border-radius: 4px;
 }
 .block-container {
     padding-top: 0px !important;
