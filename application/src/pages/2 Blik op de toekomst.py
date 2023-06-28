@@ -92,7 +92,7 @@ if st.session_state["authentication_status"]:
                 option = st.selectbox("Selecteer gebied:", np.append([username], ts_total.gm_naam.unique()[1:]))
         else:
             with col1:
-                option = st.selectbox("Selecteer gebied:", ts_total.gm_naam.unique())
+                option = st.selectbox("Selecteer gebied:", np.append(['Amsterdam'], [x for x in ts_total.gm_naam.unique() if x != 'Amsterdam']))
 
         col1, col2 = st.columns(2)
         
@@ -101,9 +101,48 @@ if st.session_state["authentication_status"]:
         include_list = list(ts_plot.regio[:1])
 
         pio.renderers.default="notebook"
-        fig = px.line(ts_plot, x="year", y="p_jz_tn", color="regio")
-        fig.for_each_trace(lambda trace: trace.update(visible="legendonly") 
-                        if trace.name not in include_list else ())
+        # fig.for_each_trace(lambda trace: trace.update(visible="legendonly") 
+        #                 if trace.name not in include_list else ())
+
+        ts_plot1 = ts_plot.loc[ts_plot.year != '2023-01-01']
+        ts_plot2 = ts_plot.loc[ts_plot.year.isin({'2022-01-01', '2023-01-01'})]
+        # fig = px.line(ts_plot, x="year", y="p_jz_tn", color="regio")
+        import plotly.graph_objects as go
+        import matplotlib, random
+
+        colors = [
+                "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#800000", "#008000", "#000080", "#808000",
+                "#800080", "#008080", "#FF8000", "#FF0080", "#80FF00", "#00FF80", "#0080FF", "#8000FF", "#804000", "#408000",
+                "#004080", "#808040", "#800040", "#004080", "#408040", "#408080", "#804080", "#C00000", "#00C000", "#0000C0",
+                "#C0C000", "#C000C0", "#00C0C0", "#FF4000", "#FF0040", "#40FF00", "#00FF40", "#0040FF", "#C04000", "#C00040",
+                "#40C000", "#00C040", "#0040C0", "#C04040", "#40C040", "#40C0C0", "#C040C0", "#FF8000", "#FF0080", "#80FF00"
+        ]
+
+        data = []
+        for wijk, color in zip(ts_plot.regio.unique(), colors[:len(ts_plot.regio.unique())]):
+                ts_wijk1 = ts_plot1[(ts_plot1['regio'] == wijk)]
+                trace1 = go.Scatter(x=ts_wijk1['year'],
+                                    y=ts_wijk1['p_jz_tn'],
+                                    name=wijk,
+                                    legendgroup=wijk,
+                                    line={'dash': 'solid', 'color': color},
+                                    mode='lines')
+                
+                ts_wijk2 = ts_plot2[(ts_plot2['regio'] == wijk)]
+                trace2 = go.Scatter(x=ts_wijk2['year'],
+                                    y=ts_wijk2['p_jz_tn'],
+                                    name=wijk,
+                                    legendgroup=wijk,
+                                    line={'dash': 'dash', 'color': color},
+                                    showlegend=False)
+                data.extend([trace1, trace2])
+
+        fig = go.Figure(data=data)
+
+        region_names = ts_plot['regio'].unique()
+        default_active_regions = region_names[:6]
+        fig.for_each_trace(lambda trace: trace.update(visible=True)
+                        if trace.name in default_active_regions else trace.update(visible="legendonly"))
 
         fig.update_layout(
                 shapes=[
