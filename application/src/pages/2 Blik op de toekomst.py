@@ -50,6 +50,7 @@ st.markdown('''
 [data-baseweb="select"] {
     margin-top: -40px;
     border:1px solid grey;
+
 }
 .block-container {
     padding-top: 0px !important;
@@ -110,16 +111,10 @@ if st.session_state["authentication_status"]:
         import plotly.graph_objects as go
         import matplotlib, random
 
-        colors = [
-                "#FF0000", "#00FF00", "#0000FF", "#FFFF00", "#FF00FF", "#00FFFF", "#800000", "#008000", "#000080", "#808000",
-                "#800080", "#008080", "#FF8000", "#FF0080", "#80FF00", "#00FF80", "#0080FF", "#8000FF", "#804000", "#408000",
-                "#004080", "#808040", "#800040", "#004080", "#408040", "#408080", "#804080", "#C00000", "#00C000", "#0000C0",
-                "#C0C000", "#C000C0", "#00C0C0", "#FF4000", "#FF0040", "#40FF00", "#00FF40", "#0040FF", "#C04000", "#C00040",
-                "#40C000", "#00C040", "#0040C0", "#C04040", "#40C040", "#40C0C0", "#C040C0", "#FF8000", "#FF0080", "#80FF00"
-        ]
+        colors = ['#9100B7', '#F156F2', '#D5BCFD', '#e2007a', '#D787F8', '#A100BB', '#DA0090', '#D2A7FB', '#D5009E', '#DACCFE', '#D3AFFC', '#C200C4', '#D200A5', '#E30481', '#CB00B6', '#D400A0', '#EA29BC', '#DB008E', '#E81DA9', '#EF41DC', '#C500C4', '#E50C8F', '#BE00C3', '#C700BF', '#CD00B2', '#E862F4', '#9900B9', '#E921B0', '#EE5AF3', '#7200AE', '#D9C8FE', '#EC31C7', '#D100A8', '#7D00B2', '#DD0088', '#D58FF9', '#D000AA', '#E666F4', '#A900BE', '#CE00AF', '#F152EF', '#D68BF9', '#8900B5', '#AD00BF', '#D300A3', '#8D00B6', '#D6009B', '#CA00B9', '#D80096', '#D39BFA', '#9500B8', '#DD76F7', '#F14EEB', '#D4B8FD', '#EB5EF3', '#A500BD', '#ED35CD', '#D493FA', '#D90093', '#CF00AD', '#D70098', '#DA7FF7', '#E719A3', '#EE3DD7', '#7A00B0', '#E16EF6', '#DC008B', '#B100C0', '#B500C1', '#9D00BA', '#D397FA', '#F049E6', '#E61096', '#D3B4FC', '#E6149D', '#DE0085', '#ED39D2', '#BA00C2', '#8100B3', '#EA25B6', '#E1007D', '#D2ABFC', '#DB7AF7', '#D6C0FD', '#D2A3FB', '#E00080', '#D29FFB', '#DF72F6', '#F045E1', '#D7C4FD', '#7600AF', '#8500B4', '#DF0083', '#CC00B4', '#C600C2', '#EB2DC2', '#C900BB', '#E36AF5', '#E40888', '#C800BD', '#D883F8']
 
         data = []
-        for wijk, color in zip(ts_plot.regio.unique(), colors[:len(ts_plot.regio.unique())]):
+        for wijk, color in zip(ts_plot.regio.unique(),  colors[:len(ts_plot.regio.unique())]):
                 ts_wijk1 = ts_plot1[(ts_plot1['regio'] == wijk)]
                 trace1 = go.Scatter(x=ts_wijk1['year'],
                                     y=ts_wijk1['p_jz_tn'],
