@@ -176,7 +176,7 @@ if st.session_state["authentication_status"]:
                         line_width=0,
                         )
                 ],
-                title="Data en voorspelling jeugdhulp zonder verblijf"
+                title='Percentage jongeren met jeugdzorg'
         )
         with col1:
                 st.write('')
