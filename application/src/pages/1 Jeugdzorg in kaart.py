@@ -69,6 +69,9 @@ st.markdown('''
     margin-top: 60px !important;
     margin-left: -40px !important;
 }
+.stPlotlyChart {
+    padding-top: 0px !important;
+}
 [data-testid="stSidebarNav"] {  
     margin-bottom: 70px !important;
 }
@@ -107,11 +110,11 @@ if st.session_state["authentication_status"]:
             else:
                 with col2:
                     wijk = st.selectbox("", np.append(["Selecteer wijk (optioneel):"], gdf[(gdf.gm_naam == option) & (gdf.recs == 'Wijk')].regio.unique()))
-                code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
-                if (wijk == "Selecteer wijk (optioneel):"):
-                    plot(code)
+                if (wijk != "Selecteer wijk (optioneel):"):
+                    code = gdf[(gdf.gm_naam == option) & (gdf.regio == wijk)].gwb_code_10.unique()[0]
                 else:
-                    plot(code)
+                    code = gdf[(gdf.gm_naam == option) & (gdf.recs == 'Gemeente')].gwb_code_10.unique()[0]
+                plot(code)
 
 
 elif authentication_status == False:

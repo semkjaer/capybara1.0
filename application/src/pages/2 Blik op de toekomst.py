@@ -185,6 +185,7 @@ if st.session_state["authentication_status"]:
 
                 fig = px.bar(x=ts_bar_23_sorted['p_jz_tn'][:10].round(2), 
                         y=ts_bar_23_sorted.regio[ts_bar_23_sorted['p_jz_tn'].index][:10],
+                        text=ts_bar_23_sorted['p_jz_tn'][:10].round(2).apply(lambda x: str(x)+'%'),
                         title='Wijken met het hoogst voorspelde percentage jongeren met jeugdzorg in 2023', 
                         template='plotly_white')
 
@@ -199,6 +200,8 @@ if st.session_state["authentication_status"]:
                         title='Wijken en hun voorspelde percentage jongeren met jeugdzorg in 2023')
                 fig.update_layout(colorway=shades_of_pink)
         with col1:
+              st.write('')
+        with col1:
                 st.plotly_chart(fig, use_container_width=True)
 
         with col2:
@@ -208,16 +211,18 @@ if st.session_state["authentication_status"]:
                 ts_22_plot = ts_22_sorted.drop(["gwb_code_10", "gm_naam", "regio", "p_jz_tn", "Koopwoningen", "year"], axis=1)
                 to_plot = st.selectbox("", ts_22_plot.columns[1:])
                 fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted[to_plot].index][:20], 
-                y=ts_22_sorted[to_plot][:20].round(2), 
-                title='{}'.format(to_plot), 
-                template='plotly_white')
+                        y=ts_22_sorted[to_plot][:20].round(2),
+                        title='{}'.format(to_plot), 
+                        template='plotly_white',)
 
                 fig.add_bar(x=['Gemiddelde in Nederland'], 
-                        y=[ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean()], 
+                        y=[ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean()],
+                        text=[str(round(ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean(), 1))+'%'],
                         name='Nederlands gemiddelde', 
                         showlegend=False)
                 fig.update_layout(xaxis_title="Wijken",
-                                yaxis_title="{}".format(to_plot))
+                                yaxis_title="{}".format(to_plot),
+                                title=dict(y=0.99))
                 fig.update_traces(marker_color='#E2007A')
 
                 st.plotly_chart(fig, use_container_width=True)
