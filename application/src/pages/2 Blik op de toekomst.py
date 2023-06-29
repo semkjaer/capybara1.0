@@ -48,10 +48,11 @@ st.markdown('''
     background-color: #FFFFFF; 
 }
 [data-baseweb="select"] {
-    margin-top: -40px;
+    margin-top: -20px;
     border:1px solid #0047AB;
     box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
     border-radius: 4px;
+    z-index: 1000;
 }
 .block-container {
     padding-top: 0px !important;
@@ -69,6 +70,16 @@ st.markdown('''
     min-width: 225px !important;
     max-width: 225px !important;
 }
+.main-svg {
+    padding-bottom: 0px !important;
+}
+.stPlotlyChart {
+    margin-bottom: -65px;
+    margin-top: -30px;
+}
+.element-container {
+    padding-bottom: 0;
+}
 </style>
 ''', unsafe_allow_html=True)
 
@@ -82,20 +93,29 @@ if authentication_status:
     authenticator.logout('Logout', 'sidebar')
 
 if st.session_state["authentication_status"]:
+    config = {'displayModeBar': False}
     with st.expander('', expanded=True):
-        st.text("")
         ts_total = pd.read_csv("ts_total.csv")
+        # ts_total
+        # ggg = ts_total[ts_total['gwb_code_10'].str[2:6] = '1400']
+        # print(ggg)
         shades_of_pink = ['#FC6C85', '#FC8EAC', '#F88379', '#FF9999', '#FFD1DC', '#FFB6C1', '#FFB7C5', 
                     '#FFC1CC', '#F4C2C2', '#E75480', '#FF007F', '#A94064', '#FF6EC7', '#DE5D83', 
                     '#FF69B4', '#FFA6C9', '#FF8E8E', '#F4C2C2', '#FFBCD9', '#EFBBCC', '#F64A8A']
         col1, _, _ = st.columns(3)
         if username in ts_total.gm_naam.unique():
             with col1:
-                option = st.selectbox("Selecteer gebied:", np.append([username], ts_total.gm_naam.unique()[1:]))
+                option = st.selectbox("", np.append([username], ts_total.gm_naam.unique()[1:]))
         else:
             with col1:
-                option = st.selectbox("Selecteer gebied:", np.append(['Amsterdam'], [x for x in ts_total.gm_naam.unique() if x != 'Amsterdam']))
-
+                option = st.selectbox("", np.append(['Amsterdam'], [x for x in ts_total.gm_naam.unique() if x != 'Amsterdam']))
+        st.markdown("""<div style="
+            height:1.1px;
+            opacity: 0.8;
+            border:none;
+            color:#0047AB;
+            background-color:#0047AB;
+            box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);" /> """, unsafe_allow_html=True)
         col1, col2 = st.columns(2)
         
         ts_plot = ts_total[ts_total.gm_naam == option]
@@ -159,52 +179,76 @@ if st.session_state["authentication_status"]:
                 title="Data en voorspelling jeugdhulp zonder verblijf"
         )
         with col1:
-                st.plotly_chart(fig, use_container_width=True)
-
-        gemeentedata = pd.read_csv("gemeentedata.csv")
-        gemeentedata = gemeentedata[gemeentedata["Gemeentenaam_18"].str.strip() == option]
-
-        # Melt the dataframe to transform the columns into rows
-        gemeentedata = gemeentedata[["ID","k_0Tot4Jaar_2", "k_4Tot12Jaar_3", "k_12Tot18Jaar_4", "k_18Tot23Jaar_5"]]
-        gemeentedata.columns = ["ID","kinderen tot 4", "kinderen tussen 4 en 12", "kinderen tussen 12 en 18", "kinderen tussen 18 en 24"]
-        gemeentedata = gemeentedata.melt(id_vars='ID', var_name='AgeGroup', value_name='Aantal')
-
-        # Create the pie chart using Plotly Express
-        fig = px.pie(gemeentedata, values='Aantal', names='AgeGroup', title="Verdeling leeftijdsgroepen in gemeente voor jeugdhulp")
-        fig.update_layout(colorway=shades_of_pink)
-        
+                st.write('')
+                st.plotly_chart(fig, use_container_width=True, config=config)
         with col2:
-                st.plotly_chart(fig, use_container_width=True)
+                plot_2_option = st.selectbox("", np.append(['Wijken en hun voorspelde percentage jongeren met jeugdzorg in 2023'], ['Proportie jeugdzorg per leeftijdsgroep']))
 
+        if (plot_2_option == 'Proportie jeugdzorg per leeftijdsgroep'):
+            gemeentedata = pd.read_csv("gemeentedata.csv")
+            gemeentedata = gemeentedata[gemeentedata["Gemeentenaam_18"].str.strip() == option]
+
+            # Melt the dataframe to transform the columns into rows
+            gemeentedata = gemeentedata[["ID","k_0Tot4Jaar_2", "k_4Tot12Jaar_3", "k_12Tot18Jaar_4", "k_18Tot23Jaar_5"]]
+            gemeentedata.columns = ["ID","kinderen tot 4", "kinderen tussen 4 en 12", "kinderen tussen 12 en 18", "kinderen tussen 18 en 24"]
+            gemeentedata = gemeentedata.melt(id_vars='ID', var_name='AgeGroup', value_name='Aantal')
+
+            # Create the pie chart using Plotly Express
+            fig = px.pie(gemeentedata, values='Aantal', names='AgeGroup', title=" ")
+            fig.update_layout(colorway=shades_of_pink, title=dict(y=0.99))
+            with col2:
+                    # fig.update_traces(domain=dict(x=[0, 1], y=[0.2, 1.2]))
+                    st.plotly_chart(fig, use_container_width=True, margin=dict(b=0), config=config)
+        else:
+            ts_pie = ts_total[ts_total.gm_naam == option]
+            ts_23_sorted = ts_pie.loc[(ts_pie['year'] == '2023-01-01')]
+            fig = px.pie(names=ts_23_sorted.regio[ts_23_sorted['p_jz_tn'].index][:20].sort_values(ascending=True), 
+                            values=ts_23_sorted['p_jz_tn'][:20].round(2).sort_values(ascending=True), 
+                            title=' ')
+            fig.update_layout(colorway=shades_of_pink, title=dict(y=0.99))
+            with col2:
+                    # fig.update_traces(domain=dict(x=[0, 1], y=[0.2, 1]))
+                    st.plotly_chart(fig, use_container_width=True, margin=dict(b=0), config=config)
 
         ts_pie = ts_total[ts_total.gm_naam == option]
         ts_23_sorted = ts_pie.loc[(ts_pie['year'] == '2023-01-01')]
         ts_22_sorted = ts_pie.loc[(ts_pie['year'] == '2022-01-01')]
-        if ts_plot["regio"].unique().size > 20:
-                ts_bar_23_sorted = ts_plot.loc[(ts_plot['year'] == '2023-01-01')].sort_values(by = 'p_jz_tn', ascending=False)
+        ts_bar_23_sorted = ts_plot.loc[(ts_plot['year'] == '2023-01-01')].sort_values(by = 'p_jz_tn', ascending=False)
 
-                fig = px.bar(x=ts_bar_23_sorted['p_jz_tn'][:10].round(2), 
-                        y=ts_bar_23_sorted.regio[ts_bar_23_sorted['p_jz_tn'].index][:10],
-                        text=ts_bar_23_sorted['p_jz_tn'][:10].round(2).apply(lambda x: str(x)+'%'),
-                        title='Wijken met het hoogst voorspelde percentage jongeren met jeugdzorg in 2023', 
-                        template='plotly_white')
+        cut = ts_bar_23_sorted[:10]
+        new_row = pd.Series([np.nan]*len(cut.columns), index=cut.columns)
 
-                fig.update_layout(yaxis = {"categoryorder":"total ascending"},
-                                xaxis_title="Percentage jongeren met jeugdzorg",
-                                yaxis_title="Wijk")
+        # Assign values to two columns
+        new_row["p_jz_tn"] = ts_bar_23_sorted['p_jz_tn'].mean()
+        new_row["regio"] = 'Gemiddelde Nederland'
 
-                fig.update_traces(marker_color='#E2007A')
-        else:
-                fig = px.pie(names=ts_23_sorted.regio[ts_23_sorted['p_jz_tn'].index][:20].sort_values(ascending=True), 
-                        values=ts_23_sorted['p_jz_tn'][:20].round(2).sort_values(ascending=True), 
-                        title='Wijken en hun voorspelde percentage jongeren met jeugdzorg in 2023')
-                fig.update_layout(colorway=shades_of_pink)
-        with col1:
-              st.write('')
-        with col1:
-                st.plotly_chart(fig, use_container_width=True)
+        # Append the new row to the end of the DataFrame
+        cut.loc[len(cut)] = new_row
 
+        fig = px.bar(x=cut['p_jz_tn'].round(2), 
+                y=cut.regio[cut['p_jz_tn'].index],
+                text=cut['p_jz_tn'].round(2).apply(lambda x: str(x)+'%'),
+                title='Wijken met het hoogst voorspelde percentage jongeren met jeugdzorg in 2023', 
+                template='plotly_white')
+        avg = ts_bar_23_sorted['p_jz_tn'].mean()
+        print(avg)
+        # fig.add_bar(x=[avg], 
+        #                 y=['Gemiddelde in Nederland'],
+        #                 name='Nederlands gemiddelde', 
+        #                 showlegend=False)
+        
+        fig.update_layout(yaxis = {"categoryorder":"total ascending"},
+                        xaxis_title="Percentage jongeren met jeugdzorg",
+                        yaxis_title="Wijk")
+        colors = ['#E2007A']*(len(cut)-1) + ['#0047AB']
+
+        fig.update_traces(marker_color=colors)
         with col2:
+                st.plotly_chart(fig, use_container_width=True, config=config)
+
+        with col1:
+                st.write('')
+                st.write('')
                 ts_22_sorted.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
                 ts_total_alt = ts_total
                 ts_total_alt.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
@@ -212,7 +256,7 @@ if st.session_state["authentication_status"]:
                 to_plot = st.selectbox("", ts_22_plot.columns[1:])
                 fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted[to_plot].index][:20], 
                         y=ts_22_sorted[to_plot][:20].round(2),
-                        title='{}'.format(to_plot), 
+                        title=' ',#'{}'.format(to_plot), 
                         template='plotly_white')
 
                 fig.update_traces(marker_color='#E2007A')
@@ -226,7 +270,12 @@ if st.session_state["authentication_status"]:
                                 yaxis_title="{}".format(to_plot),
                                 title=dict(y=0.99))
 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, use_container_width=True, config=config)
+
+                st.write('')
+                st.write('')
+                st.write('')
+                st.write('')
 
 
 
