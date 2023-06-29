@@ -181,101 +181,112 @@ if st.session_state["authentication_status"]:
         with col1:
                 st.write('')
                 st.plotly_chart(fig, use_container_width=True, config=config)
-        with col2:
-                plot_2_option = st.selectbox("", np.append(['Wijken en hun voorspelde percentage jongeren met jeugdzorg in 2023'], ['Proportie jeugdzorg per leeftijdsgroep']))
 
-        if (plot_2_option == 'Proportie jeugdzorg per leeftijdsgroep'):
-            gemeentedata = pd.read_csv("gemeentedata.csv")
-            gemeentedata = gemeentedata[gemeentedata["Gemeentenaam_18"].str.strip() == option]
+        gemeentedata = pd.read_csv("gemeentedata.csv")
+        gemeentedata = gemeentedata[gemeentedata["Gemeentenaam_18"].str.strip() == option]
 
-            # Melt the dataframe to transform the columns into rows
-            gemeentedata = gemeentedata[["ID","k_0Tot4Jaar_2", "k_4Tot12Jaar_3", "k_12Tot18Jaar_4", "k_18Tot23Jaar_5"]]
-            gemeentedata.columns = ["ID","kinderen tot 4", "kinderen tussen 4 en 12", "kinderen tussen 12 en 18", "kinderen tussen 18 en 24"]
-            gemeentedata = gemeentedata.melt(id_vars='ID', var_name='AgeGroup', value_name='Aantal')
-
-            # Create the pie chart using Plotly Express
-            fig = px.pie(gemeentedata, values='Aantal', names='AgeGroup', title=" ")
-            fig.update_layout(colorway=shades_of_pink, title=dict(y=0.99))
-            with col2:
-                    # fig.update_traces(domain=dict(x=[0, 1], y=[0.2, 1.2]))
-                    st.plotly_chart(fig, use_container_width=True, margin=dict(b=0), config=config)
-        else:
-            ts_pie = ts_total[ts_total.gm_naam == option]
-            ts_23_sorted = ts_pie.loc[(ts_pie['year'] == '2023-01-01')]
-            fig = px.pie(names=ts_23_sorted.regio[ts_23_sorted['p_jz_tn'].index][:20].sort_values(ascending=True), 
-                            values=ts_23_sorted['p_jz_tn'][:20].round(2).sort_values(ascending=True), 
-                            title=' ')
-            fig.update_layout(colorway=shades_of_pink, title=dict(y=0.99))
-            with col2:
-                    # fig.update_traces(domain=dict(x=[0, 1], y=[0.2, 1]))
-                    st.plotly_chart(fig, use_container_width=True, margin=dict(b=0), config=config)
+        # Melt the dataframe to transform the columns into rows
+        gemeentedata = gemeentedata[["ID","k_0Tot4Jaar_2", "k_4Tot12Jaar_3", "k_12Tot18Jaar_4", "k_18Tot23Jaar_5"]]
+        gemeentedata.columns = ["ID","kinderen tot 4", "kinderen tussen 4 en 12", "kinderen tussen 12 en 18", "kinderen tussen 18 en 24"]
+        gemeentedata = gemeentedata.melt(id_vars='ID', var_name='AgeGroup', value_name='Aantal')
 
         ts_pie = ts_total[ts_total.gm_naam == option]
         ts_23_sorted = ts_pie.loc[(ts_pie['year'] == '2023-01-01')]
         ts_22_sorted = ts_pie.loc[(ts_pie['year'] == '2022-01-01')]
         ts_bar_23_sorted = ts_plot.loc[(ts_plot['year'] == '2023-01-01')].sort_values(by = 'p_jz_tn', ascending=False)
-
+        avg = ts_total['p_jz_tn'].mean()
         cut = ts_bar_23_sorted[:10]
-        new_row = pd.Series([np.nan]*len(cut.columns), index=cut.columns)
 
-        # Assign values to two columns
-        new_row["p_jz_tn"] = ts_bar_23_sorted['p_jz_tn'].mean()
-        new_row["regio"] = 'Gemiddelde Nederland'
+        if (gemeentedata['Aantal'].any()):
+            # Create the pie chart using Plotly Express
+            fig = px.pie(gemeentedata, values='Aantal', names='AgeGroup', title="Aandeel jeugdzorg naar leeftijdsgroep")
+            fig.update_layout(colorway=shades_of_pink, title=dict(y=0.99))
+            with col2:
+                    st.write('')
+                    st.write('')
+                    st.write('')
+                    # fig.update_traces(domain=dict(x=[0, 1], y=[0.2, 1.2]))
+                    st.plotly_chart(fig, use_container_width=True, margin=dict(b=0), config=config)
+        else:
+            # Create a pie chart with a single category
+            fig = go.Figure(data=[go.Pie(labels=["Geen gegevens<br>beschikbaar"],
+                                         values=[1],
+                                         marker_colors=["grey"])])
+            fig.update_layout(title_text="Aandeel jeugdzorg naar leeftijdsgroep")
 
-        # Append the new row to the end of the DataFrame
-        cut.loc[len(cut)] = new_row
+            with col2:
+                st.write('')
+                st.plotly_chart(fig, use_container_width=True, margin=dict(b=20), config=config)
 
-        fig = px.bar(x=cut['p_jz_tn'].round(2), 
-                y=cut.regio[cut['p_jz_tn'].index],
-                text=cut['p_jz_tn'].round(2).apply(lambda x: str(x)+'%'),
-                title='Wijken met het hoogst voorspelde percentage jongeren met jeugdzorg in 2023', 
-                template='plotly_white')
-        avg = ts_bar_23_sorted['p_jz_tn'].mean()
-        print(avg)
-        # fig.add_bar(x=[avg], 
-        #                 y=['Gemiddelde in Nederland'],
-        #                 name='Nederlands gemiddelde', 
-        #                 showlegend=False)
-        
-        fig.update_layout(yaxis = {"categoryorder":"total ascending"},
-                        xaxis_title="Percentage jongeren met jeugdzorg",
-                        yaxis_title="Wijk")
-        colors = ['#E2007A']*(len(cut)-1) + ['#0047AB']
+        if len(ts_pie) > 20:
+            new_row = pd.Series([np.nan]*len(cut.columns), index=cut.columns)
 
-        fig.update_traces(marker_color=colors)
+            new_row["p_jz_tn"] = ts_total['p_jz_tn'].mean()
+            new_row["regio"] = 'Gemiddelde Nederland'
+            cut.loc[len(cut)] = new_row
+
+            fig = px.bar(x=cut['p_jz_tn'].round(2), 
+                    y=cut.regio[cut['p_jz_tn'].index],
+                    text=cut['p_jz_tn'].round(2).apply(lambda x: str(x)+'%'),
+                    title='Wijken met het hoogst voorspelde percentage jongeren met jeugdzorg in 2023', 
+                    template='plotly_white')
+            
+            fig.update_layout(yaxis = {"categoryorder":"total ascending"},
+                            xaxis_title="Percentage jongeren met jeugdzorg",
+                            yaxis_title="Wijk")
+            colors = ['#E2007A']*(len(cut)-1) + ['#0047AB']
+
+            fig.update_traces(marker_color=colors)
+            with col1:
+                st.write('')
+                st.write('')
+                st.write('')
+                st.write('')
+                st.plotly_chart(fig, use_container_width=True, config=config)
+        else:
+            st.write('')
+            st.write('')
+            fig = px.pie(names=ts_23_sorted.regio[ts_23_sorted['p_jz_tn'][:20].index].sort_values(ascending=True), 
+                values=ts_23_sorted['p_jz_tn'][:20].round(2).sort_values(ascending=True), 
+                title='Aandeel jeugdzorg naar wijk')
+            fig.update_layout(colorway=shades_of_pink, title=dict(y=0.99))
+            with col1:
+                st.write('')
+                st.write('')
+                st.write('')
+                st.write('')
+                st.plotly_chart(fig, use_container_width=True, margin=dict(b=0), config=config)
+
         with col2:
-                st.plotly_chart(fig, use_container_width=True, config=config)
+            st.write('')
+            ts_22_sorted.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
+            ts_total_alt = ts_total
+            ts_total_alt.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
+            ts_22_plot = ts_22_sorted.drop(["gwb_code_10", "gm_naam", "regio", "p_jz_tn", "Koopwoningen", "year"], axis=1)
+            to_plot = st.selectbox("", ts_22_plot.columns[1:])
+            fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted[to_plot].index][:20], 
+                    y=ts_22_sorted[to_plot][:20].round(2),
+                    title=' ',#'{}'.format(to_plot), 
+                    template='plotly_white')
 
-        with col1:
-                st.write('')
-                st.write('')
-                ts_22_sorted.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
-                ts_total_alt = ts_total
-                ts_total_alt.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
-                ts_22_plot = ts_22_sorted.drop(["gwb_code_10", "gm_naam", "regio", "p_jz_tn", "Koopwoningen", "year"], axis=1)
-                to_plot = st.selectbox("", ts_22_plot.columns[1:])
-                fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted[to_plot].index][:20], 
-                        y=ts_22_sorted[to_plot][:20].round(2),
-                        title=' ',#'{}'.format(to_plot), 
-                        template='plotly_white')
+            fig.update_traces(marker_color='#E2007A')
+            
+            fig.add_bar(x=['Gemiddelde in Nederland'], 
+                    y=[ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean()],
+                    name='Nederlands gemiddelde', 
+                    showlegend=False,
+                    marker_color='#0047AB')
+            fig.update_layout(xaxis_title="Wijken",
+                            yaxis_title="{}".format(to_plot),
+                            title=dict(y=0.99))
 
-                fig.update_traces(marker_color='#E2007A')
-                
-                fig.add_bar(x=['Gemiddelde in Nederland'], 
-                        y=[ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean()],
-                        name='Nederlands gemiddelde', 
-                        showlegend=False,
-                        marker_color='#0047AB')
-                fig.update_layout(xaxis_title="Wijken",
-                                yaxis_title="{}".format(to_plot),
-                                title=dict(y=0.99))
+            st.plotly_chart(fig, use_container_width=True, config=config)
 
-                st.plotly_chart(fig, use_container_width=True, config=config)
-
-                st.write('')
-                st.write('')
-                st.write('')
-                st.write('')
+            st.write('')
+            st.write('')
+            st.write('')
+            st.write('')
+            
 
 
 
