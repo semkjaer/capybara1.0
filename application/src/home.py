@@ -57,6 +57,19 @@ st.markdown('''
 .streamlit-expander { 
         background-color: #FFFFFF; 
 }
+[data-testid="stSidebarNav"] {  
+    margin-bottom: 70px !important;
+}
+[data-testid="stSidebar"][aria-expanded="true"] {
+    min-width: 225px !important;
+    max-width: 225px !important;
+}
+.block-container {
+    padding-top: 0px !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    margin-top: -70px !important;
+}
 [data-testid="stSidebar"][aria-expanded="true"] {
     min-width: 225px !important;
     max-width: 225px !important;

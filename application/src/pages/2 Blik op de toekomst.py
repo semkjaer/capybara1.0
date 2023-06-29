@@ -213,17 +213,18 @@ if st.session_state["authentication_status"]:
                 fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted[to_plot].index][:20], 
                         y=ts_22_sorted[to_plot][:20].round(2),
                         title='{}'.format(to_plot), 
-                        template='plotly_white',)
+                        template='plotly_white')
 
+                fig.update_traces(marker_color='#E2007A')
+                
                 fig.add_bar(x=['Gemiddelde in Nederland'], 
                         y=[ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean()],
-                        text=[str(round(ts_total_alt.loc[(ts_total_alt['year'] == '2022-01-01')][to_plot].mean(), 1))+'%'],
                         name='Nederlands gemiddelde', 
-                        showlegend=False)
+                        showlegend=False,
+                        marker_color='#0047AB')
                 fig.update_layout(xaxis_title="Wijken",
                                 yaxis_title="{}".format(to_plot),
                                 title=dict(y=0.99))
-                fig.update_traces(marker_color='#E2007A')
 
                 st.plotly_chart(fig, use_container_width=True)
 

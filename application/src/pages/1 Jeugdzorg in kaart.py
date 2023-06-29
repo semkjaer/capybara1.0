@@ -55,6 +55,7 @@ st.markdown('''
     border:1px solid #0047AB;
     box-shadow: 0 2px 4px rgb(0 0 0 / 0.2);
     border-radius: 4px;
+    padding-left: 0px !important;
 }
 .block-container {
     padding-top: 0px !important;
