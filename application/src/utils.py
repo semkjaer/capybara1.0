@@ -21,6 +21,12 @@ def logo():
     return add_logo("application/src/logo_localgovernment.jpg")
 
 
+@st.cache_resource
+def load_data():
+    df = pd.read_csv("ts_total.csv")
+    return df
+
+
 def auth():
     with open('./application/config.yaml', 'r') as file:
             config = yaml.load(file, Loader=SafeLoader)

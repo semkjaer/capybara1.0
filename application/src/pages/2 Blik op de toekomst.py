@@ -9,7 +9,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import plotly.io as pio
 import plotly.express as px
-from utils import auth, get_data, logo, model
+from utils import auth, logo, load_data
 import matplotlib.pyplot as plt
 
 st.set_page_config(page_title='PinkCapybara', page_icon='favicon.ico', layout='wide', initial_sidebar_state='auto')
@@ -61,6 +61,7 @@ st.markdown('''
     margin-top: -70px !important;
 }
 .streamlit-expanderContent {
+    minimum-height: 900px;
     margin-top: -40px !important;
 }
 [data-testid="stSidebarNav"] {  
@@ -95,10 +96,7 @@ if authentication_status:
 if st.session_state["authentication_status"]:
     config = {'displayModeBar': False}
     with st.expander('', expanded=True):
-        ts_total = pd.read_csv("ts_total.csv")
-        # ts_total
-        # ggg = ts_total[ts_total['gwb_code_10'].str[2:6] = '1400']
-        # print(ggg)
+        ts_total = load_data()
         shades_of_pink = ['#FC6C85', '#FC8EAC', '#F88379', '#FF9999', '#FFD1DC', '#FFB6C1', '#FFB7C5', 
                     '#FFC1CC', '#F4C2C2', '#E75480', '#FF007F', '#A94064', '#FF6EC7', '#DE5D83', 
                     '#FF69B4', '#FFA6C9', '#FF8E8E', '#F4C2C2', '#FFBCD9', '#EFBBCC', '#F64A8A']
@@ -264,6 +262,7 @@ if st.session_state["authentication_status"]:
             ts_total_alt.columns = ["", "gwb_code_10", "gm_naam", "regio", "Aantal mensen met AO uitkering", "Aantal mensen met OW uitkering", "Aantal mensen met WB uitkering", "Aantal mensen met WW uitkering", "Bevolkingsdichtheid", "Gemiddeld inkomen per inwoner", "Gemiddeld inkomen per inkomensontvanger", "20% huishoudens met hoogste inkomen", " 40% huishoudens met laagste inkomen", "Huishoudens met een laag inkomen", "Huish. onder of rond sociaal minimum", "Huurwoningen totaal", "20% personen met hoogste inkomen", "40% personen met laagste inkomen", "p_jz_tn", "Koopwoningen", "year"]
             ts_22_plot = ts_22_sorted.drop(["gwb_code_10", "gm_naam", "regio", "p_jz_tn", "Koopwoningen", "year"], axis=1)
             to_plot = st.selectbox("", ts_22_plot.columns[1:])
+
             fig = px.bar(x=ts_22_sorted.regio[ts_22_sorted[to_plot].index][:20], 
                     y=ts_22_sorted[to_plot][:20].round(2),
                     title=' ',#'{}'.format(to_plot), 
