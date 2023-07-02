@@ -155,7 +155,7 @@ def registration_email(receiver_email, registered):
         message = "Welcome <user>,\n\nYou may now create an account on in our app: http://localhost:8501 "
     smtp_server = "smtp-mail.outlook.com"
     smtp_port = 587
-    username = "semkjaer@hotmail.nl"
-    password = "Sjemma@023"
+    username = ""
+    password = ""
 
     send_email(sender_email, receiver_email, subject, message, smtp_server, smtp_port, username, password)
